@@ -5,11 +5,10 @@ class UserUpdates extends CI_Controller {
 	
 	public function __construct() {
 		parent::__construct();
-		//$this->load->model('helpers_model');
+		$this->load->model('helpers_model');
 		$this->load->library('form_validation');
 		$this->load->model('users_model');
 	}
-
 	
 	public function facebook_connect() {		
 		if($this->session->userdata('is_logged_in')) {
@@ -64,7 +63,7 @@ class UserUpdates extends CI_Controller {
 				}
 			}
 		} else {
-			"You are not logged in";
+			$this->helpers_model->unauthorized();
 		}
 	}
 	

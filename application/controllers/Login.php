@@ -8,7 +8,8 @@ class Login extends CI_Controller {
 	
 	public function __construct() {
 		parent::__construct();
-		//$this->load->model('helpers_model');
+		$this->load->model('users_model');
+		$this->load->model('helpers_model');
 	}
 	
 	public function index() {
@@ -40,7 +41,6 @@ class Login extends CI_Controller {
 				$this->login_page($data);
 			}
 		} else {		
-			$this->load->model('users_model');
 			
 			$username = $this->input->post('username');
 			$password = hash('sha512', $this->input->post('password'));			
@@ -63,7 +63,7 @@ class Login extends CI_Controller {
 					
 					redirect("welcome");
 				} else {
-					echo "error";
+					echo $this->helpers_model->server_error();
 				}
 			} else {
 				$data['incorrect'] = "Username or password is incorrect !";
@@ -164,8 +164,6 @@ class Login extends CI_Controller {
 		$user = $response->getGraphUser();
 		$fb_user_id = $user['id'];
 		$email = $user['email'];
-		
-		$this->load->model('users_model');
 		
 		$user = $this->users_model->check_if_fb_acc_exist_and_return_user($fb_user_id);
 		

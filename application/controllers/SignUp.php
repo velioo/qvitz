@@ -5,7 +5,8 @@ class SignUp extends CI_Controller {
 	
 	public function __construct() {
 		parent::__construct();
-		//$this->load->model('helpers_model');
+		$this->load->model('users_model');
+		$this->load->model('helpers_model');
 	}
 	
 	public function index() {
@@ -30,7 +31,6 @@ class SignUp extends CI_Controller {
 		if($this->form_validation->run() == FALSE) {
 			$this->signup_page();
 		} else {			
-			$this->load->model('users_model');
 			$query = $this->users_model->create_user();		
 			
 			if($query !== FALSE) {		
@@ -70,8 +70,7 @@ class SignUp extends CI_Controller {
 			$data['title'] = "Sign Up";
 			//$data['css'] = 'login.css';
 			$this->load->view('fb_user_signup', $data);
-		} else {
-			$this->load->model('users_model');			
+		} else {		
 			
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -101,13 +100,12 @@ class SignUp extends CI_Controller {
 					$this->signup_page();
 				}				
 			} else {
-				echo "unathorized";
+				$this->helpers_model->unauthorized_error();
 			}
 		} 
 	}
 	
 	public function check_if_username_exists($requested_username) {
-		$this->load->model('users_model');
 		
 		$username_available = $this->users_model->check_if_username_exists($requested_username);
 		
@@ -120,7 +118,6 @@ class SignUp extends CI_Controller {
 
 	
 	public function check_if_email_exists($requested_email) {
-		$this->load->model('users_model');
 		
 		$email_available = $this->users_model->check_if_email_exists($requested_email);
 		
