@@ -18,8 +18,21 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
-	public function index()
-	{
-		$this->load->view('welcome_message');
+	public function index() {
+		
+		$data = array();
+		
+		if($this->session->userdata('is_logged_in')) {
+			$this->load->model('users_model');
+			$query = $this->users_model->check_if_user_connected_to_fb($this->session->userdata['id']);
+			
+			if($query !== FALSE) {
+				$data['is_fb_connected'] = "Disconnect Facebook";
+			} else {
+				$data['is_fb_connected'] = "Connect Facebook";
+			}
+		} 
+		
+		$this->load->view('home', $data);
 	}
 }
