@@ -18,7 +18,7 @@ class Login extends CI_Controller {
 	
 	public function login_page($data = null) {
 		$data['title'] = 'Login';
-		//$data['css'] = 'login.css';
+		$data['css'] = 'home.css';
 		if(!isset($data['header'])) {
 			$data['header'] = "Please Login";	
 		}

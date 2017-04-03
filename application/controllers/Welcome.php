@@ -22,6 +22,8 @@ class Welcome extends CI_Controller {
 			}
 		} 
 		
+		$data['title'] = 'Qvitz';
+		$data['css'] = 'home.css';
 		$this->load->view('home', $data);
 	}
 }

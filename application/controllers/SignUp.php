@@ -15,7 +15,7 @@ class SignUp extends CI_Controller {
 	
 	public function signup_page() {
 		$data['title'] = 'Sign Up';
-		//$data['css'] = 'login.css';
+		$data['css'] = 'home.css';
 		$data['header'] = 'Join Qvitz !';
 		$this->load->view('signup_page', $data);
 	}
