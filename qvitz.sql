@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: 26 март 2017 в 21:02
--- Версия на сървъра: 10.1.19-MariaDB
--- PHP Version: 7.0.13
+-- Generation Time:  3 апр 2017 в 17:07
+-- Версия на сървъра: 10.1.16-MariaDB
+-- PHP Version: 7.0.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -33,7 +33,8 @@ CREATE TABLE `answers` (
   `number` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `question_id` int(11) NOT NULL
+  `question_id` int(11) NOT NULL,
+  `result_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -68,10 +69,10 @@ CREATE TABLE `categories_quizes` (
 CREATE TABLE `facebook_accounts` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `fb_user_id` int(11) NOT NULL,
+  `fb_user_id` varchar(50) NOT NULL,
   `fb_email` varchar(50) NOT NULL,
   `access_token` varchar(255) NOT NULL,
-  `change_pass` tinyint(4) NOT NULL DEFAULT '0'
+  `changed_pass` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -196,6 +197,19 @@ CREATE TABLE `score_system` (
 -- --------------------------------------------------------
 
 --
+-- Структура на таблица `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(128) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `data` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура на таблица `users`
 --
 
@@ -256,7 +270,8 @@ CREATE TABLE `user_quiz_likes` (
 --
 ALTER TABLE `answers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `question_id` (`question_id`);
+  ADD KEY `question_id` (`question_id`),
+  ADD KEY `result_id` (`result_id`);
 
 --
 -- Indexes for table `categories`
@@ -329,8 +344,16 @@ ALTER TABLE `quiz_results`
 -- Indexes for table `score_system`
 --
 ALTER TABLE `score_system`
+  ADD PRIMARY KEY (`quiz_id`,`result_id`),
   ADD KEY `quiz_id` (`quiz_id`),
   ADD KEY `result_id` (`result_id`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_timestamp` (`timestamp`);
 
 --
 -- Indexes for table `users`
@@ -371,10 +394,15 @@ ALTER TABLE `user_quiz_likes`
 ALTER TABLE `answers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+--
 -- AUTO_INCREMENT for table `facebook_accounts`
 --
 ALTER TABLE `facebook_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `notifications`
 --
@@ -404,7 +432,7 @@ ALTER TABLE `quiz_results`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- Ограничения за дъмпнати таблици
 --
@@ -413,14 +441,15 @@ ALTER TABLE `users`
 -- Ограничения за таблица `answers`
 --
 ALTER TABLE `answers`
-  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`result_id`) REFERENCES `quiz_results` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Ограничения за таблица `categories_quizes`
 --
 ALTER TABLE `categories_quizes`
-  ADD CONSTRAINT `categories_quizes_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `categories_quizes_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `categories_quizes_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `categories_quizes_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ограничения за таблица `facebook_accounts`
