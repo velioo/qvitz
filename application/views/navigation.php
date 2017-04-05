@@ -21,7 +21,7 @@ function getMarkAsReadUrl() {
   <div class="container-fluid navigation_container">
     <div class="navbar-header">
       <a class="navbar-brand" href="<?php echo base_url();?>">
-      	<img alt="None" src="<?php echo asset_url()."imgs/logo.jpg"?>" id="logo" width="150px" height="50px" style="margin-top: -12px;">
+      	<img alt="None" src="<?php echo asset_url()."imgs/qvitz_better.jpg"?>" id="logo" width="150px" height="50px" style="margin-top: -12px;">
       </a>
     </div>
     <br/>
