@@ -15,6 +15,23 @@ function getMarkAsReadUrl() {
 <?php if($logged) {?>
 	$('head').append('<script src="<?php echo asset_url() . "js/notifications.js";?>">');
 <?php }?>
+
+$(document).ready(function() {
+
+	$(document).on('click', 'a', function (e) {
+		  e.stopPropagation();
+	});
+
+	$('a.dropdown-toggle').click(function() {
+		$(this).parent().parent().find('.dropdown-submenu').each(function() {
+			if($(this).hasClass('open')) {
+				$(this).toggleClass('open');
+			}
+		});
+		$(this).parent().toggleClass('open');
+	});
+});
+
 </script>
 
 <nav class="navbar navbar-inverse navbar-fixed-top navigation">
@@ -30,16 +47,16 @@ function getMarkAsReadUrl() {
   	<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="navigation_small_button" style="font-family: cursive; font-size:10px;">Menu
 		  <span class="caret"></span></button>
 		  <ul class="dropdown-menu multi-level" role="menu" id="dropdown_list" style="border-radius: 0px;">
-		  	<li class="dropdown-submenu"><a class="dropdown-toggle disabled" data-toggle="dropdown" href="<?php echo site_url("welcome");?>" style="font-weight: normal;">Home</a>
-		  	<li class="dropdown-submenu"><a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" style="cursor:default; font-weight: normal;">Quizes</a>
+		  	<li class="dropdown-submenu"><a class="dropdown-toggle" href="<?php echo site_url("welcome");?>" style="font-weight: normal;">Home</a></li>
+		  	<li class="dropdown-submenu"><a class="dropdown-toggle" href="#" style="font-weight: normal;">Quizes</a>
 		  		<ul class="dropdown-menu">
                   <li><a href="#">Browse Quizes</a></li>
                   <li><a href="#">Top Quizes</a></li>
                  </ul>
 		  	</li>
-		    <li class="dropdown-submenu"><a class="dropdown-toggle disabled" href="#" style="font-weight: normal;">Latest</a>
+		    <li class="dropdown-submenu"><a class="dropdown-toggle" href="#" style="font-weight: normal;">Latest</a>
 		    </li>
-		    <li class="dropdown-submenu"><a class="dropdown-toggle disabled" data-toggle="dropdown" href="#" style="cursor:default; font-weight: normal;">Community</a>
+		    <li class="dropdown-submenu"><a class="dropdown-toggle" href="#" style="font-weight: normal;">Community</a>
 		    	<ul class="dropdown-menu">
                   <li><a href="#">Browse Users</a></li>
                 </ul>

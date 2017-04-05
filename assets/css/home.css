@@ -150,6 +150,11 @@
 		background-color: #21252B;
 	}
 	
+	.navigation .navigation_container .dropdown ul li > a:focus {
+		color:white;
+		background-color: #21252B;
+	}
+	
 	#search {
 		margin-top: 12px;
 	}
@@ -489,7 +494,7 @@
 	}
 	
 	.dropdown-submenu:hover>.dropdown-menu {
-	    display: block;
+	    /* display: block; */
 	}
 	
 	.dropdown-submenu:hover>a:after {
@@ -509,7 +514,7 @@
 	}
 	
 	.dropdown:hover, .dropdown-menu {
-		/* background-color: #2F343B; */
+		background-color: #2F343B; 
 	}
 	
 	.dropdown:active, .dropdown-menu {
@@ -859,10 +864,9 @@
 			height: 90px;
 		}
 		
-		.navbar-fixed-top {
-			position: relative;
-			margin-top: -95px;
-		}
+ 		.navbar-fixed-top {		
+			margin-top: -35px;
+		} 
 		
 		.navigation_container .navbar-header {
 			margin-left: 210px;
