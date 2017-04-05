@@ -36,7 +36,7 @@ class SignUp extends CI_Controller {
 			if($query !== FALSE) {		
 				$data['account_created'] = "Your account has been created.<br/><br/> You may now log in";
 				$data['title'] = 'Login';
-				//$data['css'] = 'login.css';
+				$data['css'] = 'home.css';
 				$data['header'] = 'Please Login';
 				$this->load->view('login_page', $data);
 			} else {
@@ -68,7 +68,7 @@ class SignUp extends CI_Controller {
 			$data['fb_user_id'] = $fb_info['fb_user_id'];
 			$data['fb_email'] = $fb_info['fb_email'];
 			$data['title'] = "Sign Up";
-			//$data['css'] = 'login.css';
+			$data['css'] = 'home.css';
 			$this->load->view('fb_user_signup', $data);
 		} else {		
 			

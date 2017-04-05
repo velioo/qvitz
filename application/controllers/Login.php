@@ -197,7 +197,7 @@ class Login extends CI_Controller {
 				$data['fb_email'] = $email;
 				$data['header'] = 'Create new account';
 				$data['title'] = "Sign Up";
-				//$data['css'] = 'login.css';
+				$data['css'] = 'home.css';
 				$this->load->view('fb_user_signup', $data);				
 			}
 		} else {
