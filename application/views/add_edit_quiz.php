@@ -2,13 +2,15 @@
 <?php include 'head.php';?>
 <?php include 'navigation.php';?>
 
+<?php 
+if (!$logged) {
+	header("location: " . site_url("Login/log_in"));
+}
+?>
 
 <div id="wrap">
-	<div class="container-fluid scrollable" style="text-align: center;">
-		
-		<h1 class="main_title"><?php echo $header;?></h1>		
-		<p><?php if(isset($message)) echo $message;?>
-		
+	<div class="container-fluid scrollable content">
+		<h1 class="main_title">Create a Quiz</h1>
 	</div>
 </div>
 

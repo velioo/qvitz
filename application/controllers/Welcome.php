@@ -7,20 +7,15 @@ class Welcome extends CI_Controller {
 		parent::__construct();
 	}
 	
-	public function index() {
+	public function index() {	
 		
 		$data = array();
 		
 		if($this->session->userdata('is_logged_in')) {
-			$this->load->model('users_model');
-			$query = $this->users_model->check_if_user_connected_to_fb($this->session->userdata['id']);
-			
-			if($query !== FALSE) {
-				$data['is_fb_connected'] = "Disconnect Facebook";
-			} else {
-				$data['is_fb_connected'] = "Connect Facebook";
-			}
-		} 
+			$data['header'] = "Welcome back {$this->session->userdata('username')}";
+		} else {
+			$data['header'] = "Qvitz is a platform for creating and making quizes";
+		}
 		
 		$data['title'] = 'Qvitz';
 		$data['css'] = 'home.css';

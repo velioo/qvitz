@@ -10,6 +10,28 @@ class UserUpdates extends CI_Controller {
 		$this->load->model('users_model');
 	}
 	
+	function index() {
+		$this->settings();
+	}
+	
+	function settings() {
+		if($this->session->userdata('is_logged_in')) {
+			$query = $this->users_model->check_if_user_connected_to_fb($this->session->userdata['id']);
+				
+			if($query !== FALSE) {
+				$data['is_fb_connected'] = "Disconnect Facebook";
+			} else {
+				$data['is_fb_connected'] = "Connect Facebook";
+			}
+		} else {
+			$this->helpers_model->unauthorized();
+		}
+		
+		$data['title'] = 'Settings';
+		$data['css'] = 'home.css';
+		$this->load->view('user_settings', $data);
+	}
+	
 	public function facebook_connect() {		
 		if($this->session->userdata('is_logged_in')) {
 		
@@ -26,7 +48,7 @@ class UserUpdates extends CI_Controller {
 				}
 				
 				$this->session->set_flashdata('message', $message);
-				redirect("welcome");
+				$this->settings();
 					
 			} else {
 				redirect("login/facebook_login/connect");
@@ -44,7 +66,7 @@ class UserUpdates extends CI_Controller {
 			$this->form_validation->set_rules('password_confirm', 'Password Confirmation', 'trim|required|matches[password]');
 			
 			if($this->form_validation->run() == FALSE) {
-				redirect("welcome");
+				$this->settings();
 			} else {
 				$this->load->model('users_model');
 	
@@ -57,7 +79,7 @@ class UserUpdates extends CI_Controller {
 					$data['title'] = 'Home';
 					//$data['css'] = 'login.css';
 					$data['header'] = 'You are Logged in';
-					redirect('welcome');
+					$this->settings();
 				} else {
 					$this->load->view('signup_page');
 				}

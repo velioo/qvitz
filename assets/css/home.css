@@ -66,8 +66,11 @@
 		font-size: 30px;
 		text-align: center;
 		color: black;
+		background-color: white;
 		padding: 14px 15px 10px 15px;
 		border-bottom: 1px solid #D0D0D0;
+		margin-top: 20px;
+		margin-bottom: 20px;
 	}
 	
 	.navbar-inverse {
@@ -650,6 +653,10 @@
 	#footerContainer a{
 		padding-left: 5px;
 		font-size: 12px;
+	}
+	
+	.error {
+		color: red;
 	}
 	
  	.tooltip_m {

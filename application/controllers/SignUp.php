@@ -15,7 +15,7 @@ class SignUp extends CI_Controller {
 	
 	public function signup_page() {
 		$data['title'] = 'Sign Up';
-		$data['css'] = 'home.css';
+		$data['css'] = 'login.css';
 		$data['header'] = 'Join Qvitz !';
 		$this->load->view('signup_page', $data);
 	}
@@ -68,7 +68,7 @@ class SignUp extends CI_Controller {
 			$data['fb_user_id'] = $fb_info['fb_user_id'];
 			$data['fb_email'] = $fb_info['fb_email'];
 			$data['title'] = "Sign Up";
-			$data['css'] = 'home.css';
+			$data['css'] = 'login.css';
 			$this->load->view('fb_user_signup', $data);
 		} else {		
 			

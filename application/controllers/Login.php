@@ -18,7 +18,7 @@ class Login extends CI_Controller {
 	
 	public function login_page($data = null) {
 		$data['title'] = 'Login';
-		$data['css'] = 'home.css';
+		$data['css'] = 'login.css';
 		if(!isset($data['header'])) {
 			$data['header'] = "Please Login";	
 		}
@@ -72,11 +72,40 @@ class Login extends CI_Controller {
 		}
 	}
 	
+	public function asynch_log_in() {
+		
+		$username = $this->input->post('username');
+		$password = hash('sha512', $this->input->post('password'));
+		$query = $this->users_model->validate($username, $password);
+
+		if($query) {
+			$username = $this->input->post('username');
+			$result = $this->users_model->get_user_info_logged($username);
+			if($result !== FALSE) {
+					
+				$data = array(
+						'id' => $result['id'],
+						'username' => $result['username'],
+						'email' => $result['email'],
+						'user_avatar' => $result['avatar'],
+						'is_logged_in' => TRUE
+				);
+					
+				$this->session->set_userdata($data);
+					
+				echo "Success";
+			} else {
+				$this->helpers_model->page_not_found();
+			}
+		} else {
+			echo "Fail";
+		}
+	}
+	
 	public function logout() {
-		if(isset($this->session->userdata['is_logged_in'])) {
+		if($this->session->userdata['is_logged_in'] === TRUE) {
 			$this->session->sess_destroy();
 		} else {
-			$data['message_display'] = 'You are not logged in ';
 			redirect('welcome');
 		}
 		$this->nocache();
@@ -104,11 +133,11 @@ class Login extends CI_Controller {
 		$permissions = ['email']; 
 		$loginUrl = $helper->getLoginUrl(site_url("login/facebook_login_callback/{$connect_existing_account}"), $permissions);
 		
-		//$redirect_url = $this->input->post('redirect_url');
+		$redirect_url = $this->input->post('redirect_url');
 		
-		/* if ($redirect_url != "") {
+		if ($redirect_url != "") {
 			$this->session->set_flashdata('redirect_url', $redirect_url);
-		} */
+		}
 		
 		redirect($loginUrl);
 	}
@@ -178,10 +207,14 @@ class Login extends CI_Controller {
 						'fb_access_token' => (string) $accessToken
 					);
 					
-					$this->session->set_userdata($data);	
+					$this->session->set_userdata($data);
 					
-					redirect("welcome");				
-					
+					if($this->session->flashdata('redirect_url')) {
+						redirect($this->session->flashdata('redirect_url'));
+					} else {
+						redirect("welcome");
+					}
+			
 			} else {				
 				$email_available = $this->users_model->check_if_email_exists($email);		
 				
@@ -197,14 +230,14 @@ class Login extends CI_Controller {
 				$data['fb_email'] = $email;
 				$data['header'] = 'Create new account';
 				$data['title'] = "Sign Up";
-				$data['css'] = 'home.css';
+				$data['css'] = 'login.css';
 				$this->load->view('fb_user_signup', $data);				
 			}
 		} else {
 			if($user !== FALSE) {
 				$message = "This Facebook account is already connected with another account.";
 				$this->session->set_flashdata('message', $message);
-				redirect("welcome");
+				redirect("userUpdates");
 			} else {
 				if($this->session->userdata('is_logged_in')) {				
 					if(($email != $this->session->userdata['email'])) {
@@ -239,7 +272,7 @@ class Login extends CI_Controller {
 					}
 					
 					$this->session->set_flashdata('message', $message);
-					redirect("welcome");
+					redirect("userUpdates");
 				} else {
 					$this->helpers_model->unauthorized();
 				}

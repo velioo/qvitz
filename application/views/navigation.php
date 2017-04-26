@@ -95,16 +95,17 @@ $(document).ready(function() {
 		<div id="navigation_small_logsign">
 			<?php if(!isset($this->session->userdata['is_logged_in'])) {?>
 		      		<a id="navigation_small_signup" href="<?php echo site_url("SignUp")?>"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
-		      		<a id="navigation_small_login" href="<?php echo site_url("Login")?>"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+		      		<a id="navigation_small_login" class="log_in_modal" href="<?php //echo site_url("Login")?>"><span class="glyphicon glyphicon-log-in"></span> Login</a>
 		    <?php } else {?>
 		    	<i class="notifications_icon fa fa-bell" aria-hidden="true"><span class="notifications_number"></span></i>	
 				<div class="dropdown small_profile_menu">
 				  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="small_user_button"><?php echo $this->session->userdata['username'];?> 
 				</button>
 				  <ul class="dropdown-menu" style="min-width:50px;">
+				    <li><a href="<?php echo site_url("quiz/add_edit_quiz");?>" style="text-align: right;">Create Quiz</a></li>
 				  	<li><a href="#" style="text-align: right;">Profile</a></li>
-				    <li><a href="#" style="text-align: right;">Settings</a></li>
-				    <li><a href="<?php echo site_url("Login/logout"); ?>" style="text-align: right;">Logout</a></li>
+				    <li><a href="<?php echo site_url("userUpdates/settings");?>" style="text-align: right;">Settings</a></li>
+				    <li><a href="<?php echo site_url("Login/logout");?>" style="text-align: right;">Logout</a></li>
 				  </ul>
 				</div>
 		    <?php }?>
@@ -121,7 +122,7 @@ $(document).ready(function() {
 			</li>
 			<?php if(!isset($this->session->userdata['is_logged_in'])) {?>
 	      		<li><a id="signup_button" href="<?php echo site_url("SignUp")?>"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-	      		<li><a id="login_button" href="<?php echo site_url("Login")?>"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	      		<li><a id="login_button" class="log_in_modal" href="<?php //echo site_url("Login")?>"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
       		<?php } else {?>  
       		   <i class="notifications_icon fa fa-bell" aria-hidden="true"><span class="notifications_number"></span></i>	       		   
       	   	   <li class="dropdown profile_menu">     	   	   	  
@@ -129,8 +130,9 @@ $(document).ready(function() {
 				  <div id="user_image_div_main_menu"><img id="user_image_main_menu" src="<?php if($this->session->userdata('user_avatar') != "") { echo asset_url(). "user_profile_images/" . $this->session->userdata('user_avatar');} else { echo asset_url()."imgs/Default_Avatar.jpg";}?>">
 				  </div><span id="user_username_main_menu"><?php echo $this->session->userdata['username'];?></span></a>
 			      <ul class="dropdown-menu">
-				  	<li><a href="#" style="text-align: right;">Settings</a></li>
-			      	<li><a href="#" style="text-align: right;">Logout</a></li>
+				  	<li><a href="<?php echo site_url("quiz/add_edit_quiz");?>" style="text-align: right;">Create Quiz</a></li>
+				  	<li><a href="<?php echo site_url("userUpdates/settings");?>" style="text-align: right;">Settings</a></li>
+			      	<li><a href="<?php echo site_url("Login/logout");?>" style="text-align: right;">Logout</a></li>
 				  </ul>
 			  </li>				  
       		<?php }?>
@@ -143,3 +145,5 @@ $(document).ready(function() {
 		</div>
   </div>
 </nav>
+
+<?php if(!$logged) { include 'login_modal.php'; }?>
