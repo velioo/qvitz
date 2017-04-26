@@ -2,25 +2,34 @@
 <?php include 'head.php';?>
 <?php include 'navigation.php';?>
 
+<?php 
+if (!$logged) {
+	header("location: " . site_url("Login/log_in"));
+}
+?>
 
 <div id="wrap">
-	<div class="container-fluid scrollable" style="text-align: center;">
+	<div class="container-fluid scrollable signuplogin_container">
 	<?php if($logged) { ?>
 		
 		<h1 class="main_title">Account settings</h1>
 
-		<p class="error"><?php if( isset($message) || ($this->session->flashdata('message') != NULL) ) { if($this->session->flashdata('message') != NULL) {$message = $this->session->flashdata('message');}  if (stripos($message, 'successfully') !== false) { echo "<span style='color:green;'>" . $message . "</span>"; } else { echo "<span style='color:red;'>" . $message ."</span>"; } }?></p>
-		
-		<?php echo validation_errors();?>
+		<p class="error"><?php if(isset($message) || ($this->session->flashdata('message') != NULL) ) { if($this->session->flashdata('message') != NULL) {$message = $this->session->flashdata('message');}  if (stripos($message, 'successfully') !== false) { echo "<span style='color:green;'>" . $message . "</span>"; } else { echo "<span style='color:red;'>" . $message ."</span>"; } }?></p>
+	 	<?php 
+		 	$label_attr = array(
+		 			'class' => 'signup_label'
+		 	);
 	 	
-	 	<p>Change your password</p>
-	 	<form action="<?php echo site_url("userUpdates/change_pass");?>" method="post">
-	 		<label for="password">New Password</label>
-	 		<input id="password" type="password" name="password"><br>
-	 		<label for="confirm_password">Confirm Password</label>
-	 		<input id="confirm_password" type="password" name="password_confirm"> </br></br>
-	 		<input type="submit" value="Update Password">
-	 	</form>
+		 	echo form_open('userUpdates/change_pass', 'class="signloginform"');
+		 	echo form_label('Password', 'password', $label_attr);
+			echo form_password('password', '');
+			echo form_error('password', '<p class="error">*', '</p>');echo "<br/>";
+			echo form_label('Confirm Password', 'password_confirm', $label_attr);
+			echo form_password('password_confirm', '');
+			echo form_error('password_confirm', '<p class="error">*', '</p>');echo "<br/>";
+	 		echo form_submit('submit', 'Update', 'class="submit button-black"');echo "<br/>";echo "<br/>";
+	 		echo form_close();	 	
+	 	?>	 	
 	 	
 	 	<br>
 	 	
@@ -29,17 +38,7 @@
 		    <span class="fa fa-facebook"></span><?php echo $is_fb_connected;?>
 		 </button>
 	 	</form>
-	 	
-	 	<br>
-	 	 	
-		<a href="<?php echo site_url("login/logout");?>">Log out</a>
-	
-	<?php } else { ?>
-	
-		<h1>Your are not Logged in</h1>
-		
-		<a href="<?php echo site_url("login/login_page");?>">Log in</a>
-	
+
 	<?php }?>
 	</div>
 </div>

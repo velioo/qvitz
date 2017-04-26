@@ -28,7 +28,7 @@ class UserUpdates extends CI_Controller {
 		}
 		
 		$data['title'] = 'Settings';
-		$data['css'] = 'home.css';
+		$data['css'] = 'login.css';
 		$this->load->view('user_settings', $data);
 	}
 	
@@ -76,9 +76,6 @@ class UserUpdates extends CI_Controller {
 				
 				if($query !== FALSE) {
 					$this->session->set_flashdata('message', "You successfully changed your password");
-					$data['title'] = 'Home';
-					//$data['css'] = 'login.css';
-					$data['header'] = 'You are Logged in';
 					$this->settings();
 				} else {
 					$this->load->view('signup_page');

@@ -4,7 +4,10 @@
 
 <div id="wrap">
 	<div class="container-fluid scrollable">
-		<h1 class="main_title"><?php echo $user['username'];?></h1>
+		<div class="user_description_div">
+			<div class="user_name_div"><?php echo $user['username'];?></div>
+			<div class="user_rank_div"><?php echo "Level " . $user['rank']['rank_number'] . " - " . $user['rank']['name'];?></div>
+		</div>
 	</div>
 </div>
 

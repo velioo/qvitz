@@ -130,20 +130,6 @@ Class Users_model extends CI_Model {
 		
 		return $query;
 	}
-	
-/* 	function update_user_activity() {
-		$user_id = $this->session->userdata('id');
-		$date = date('Y-m-d H:i:s');
-		$this->db->where('id', $user_id);
-		$this->db->update('users', array('last_online' => $date));
-	} */
-
-	function update_avatar_image($image) {
-		$user_id = $this->session->userdata('id');
-		$this->db->where('id', $user_id);
-		$query = $this->db->update('users', array('avatar' => $image));
-		return $query;
-	}
 
 	function update_user_password($id, $password) {
 		$this->db->where('id', $id);
@@ -157,7 +143,16 @@ Class Users_model extends CI_Model {
 		$query = $this->db->get('users');
 		
 		if ($query->num_rows() == 1) {
-			return $query->row_array();
+			
+			$row_array = $query->row_array();
+			
+			$this->db->where('points <=', $row_array['points']);
+			$this->db->order_by('points', 'DESC');
+			$query = $this->db->get('ranks');
+			
+			$row_array['rank'] = $query->row_array();
+			
+			return $row_array;
 		} else {
 			return FALSE;
 		}
@@ -175,22 +170,17 @@ Class Users_model extends CI_Model {
 		
 		$query = $this->db->get('users');
 		 		
-		if ($query->num_rows() == 1) {		
-			return $query->row_array();
-		} else {
-			return FALSE;
-		}
-	}
-	
-	function get_user_avatar_image() {
-		$user_id = $this->session->userdata('id');
-		
-		$this->db->select('avatar');
-		$this->db->where('id', $user_id);
-		$query = $this->db->get('users');
-
-		if($query->num_rows() == 1) {
-			return $query->row_array();
+		if ($query->num_rows() == 1) {	
+			
+			$row_array = $query->row_array();
+			
+			$this->db->where('points <=', $row_array['points']);
+			$this->db->order_by('points', 'DESC');
+			$query = $this->db->get('ranks');
+			
+			$row_array['rank'] = $query->row_array();
+			
+			return $row_array;
 		} else {
 			return FALSE;
 		}
@@ -220,20 +210,6 @@ Class Users_model extends CI_Model {
 		}
 	}
 	
-/* 	function check_if_user_is_admin($id) {
-		
-		$this->db->select('u.id');
-		$this->db->join('admins as a', 'a.user_id=u.id');
-		$this->db->where('u.id', $id);
-		$query = $this->db->get('users as u');
-
-		if($query->num_rows() == 1) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	} */
-	
 	function check_if_user_connected_to_fb($user_id) {
 		
 		$this->db->select('u.id');
@@ -261,28 +237,6 @@ Class Users_model extends CI_Model {
 			return FALSE;
 		}
 	}
-	
-/* 	function temp_reset_password($user_id, $temp_pass){
-		$this->db->insert('user_temp_passes', array('user_id' => $user_id, 'temp_pass' => $temp_pass));
-	} */
-	
-/* 	function is_temp_pass_valid($temp_pass){
-		
-		$this->db->select('user_id, temp_pass');
-		$this->db->where('temp_pass', $temp_pass);
-		$query = $this->db->get('user_temp_passes');
-		
-		if($query->num_rows() == 1){
-			return $query->row_array();
-		}
-		else {
-			return FALSE;
-		}
-	} */
-	
-/* 	function delete_temp_pass($user_id) {
-		$this->db->delete('user_temp_passes', array('user_id' => $user_id));
-	} */
 }
 
 ?>

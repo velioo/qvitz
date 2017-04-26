@@ -128,7 +128,24 @@ class Quiz extends CI_Controller {
 					$categories[$i] = str_replace("_", " ", $categories[$i]);
 					$categories[$i] = ucwords($categories[$i]);
 					$this->quizes_model->make_quiz_category_relation($quiz_id, $categories[$i]);
-				}				
+				}			
+				
+				$questions_count = $this->input->post('questions_count');
+				
+				if($is_new) { // only add points to user if he is making new quiz not updating one
+					if($questions_count < 10) {
+						$points = 2;
+					} else if($questions_count < 20){
+						$points = 4;
+					} else if($questions_count < 40) {
+						$points = 6;
+					} else {
+						$points = 10;
+					}
+					
+					$this->load->model('levels_model');
+					$this->levels_model->add_points($this->session->userdata('id'), $points);
+				}						
 				
 				$this->db->trans_complete();
 				

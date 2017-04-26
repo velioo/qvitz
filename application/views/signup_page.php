@@ -21,7 +21,7 @@
 					'class' => 'signup_label'
 			);
 			
-				echo form_open('signUp/create_user', 'class="signloginform" autocomplete="off"');
+			echo form_open('signUp/create_user', 'class="signloginform" autocomplete="off"');
 			echo form_label('Username', 'username', $label_attr);
 			echo form_input('username', set_value('username', $username));
 			echo form_error('username', '<p class="error">*', '</p>');echo "<br/>";
