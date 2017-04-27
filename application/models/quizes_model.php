@@ -16,7 +16,7 @@ Class Quizes_model extends CI_Model {
 	function update_quiz($quiz_id, $quiz_content) {
 		$this->db->where('id', $quiz_id);
 		$query = $this->db->update('quizes', $quiz_content);
-		return $query;
+		return $this->db->insert_id();
 	}
 	
 	function delete_quiz($quiz_id) {
@@ -86,6 +86,34 @@ Class Quizes_model extends CI_Model {
 		$this->db->where('id', $answer_id); 			
 		$query = $this->db->delete('answers');
 		return $query;
+	}
+	
+	function get_quiz_image($quiz_id) {
+		$this->db->select('image');
+		$this->db->where('id', $quiz_id);
+		$query = $this->db->get('quizes');
+		return $query->row_array()['image'];
+	}
+	
+	function get_result_image($result_id) {
+		$this->db->select('image');
+		$this->db->where('id', $result_id);
+		$query = $this->db->get('quiz_results');
+		return $query->row_array()['image'];
+	}
+	
+	function get_question_image($question_id) {
+		$this->db->select('image');
+		$this->db->where('id', $question_id);
+		$query = $this->db->get('questions');
+		return $query->row_array()['image'];
+	}
+	
+	function get_answer_image($answer_id) {
+		$this->db->select('image');
+		$this->db->where('id', $answer_id);
+		$query = $this->db->get('answers');
+		return $query->row_array()['image'];
 	}
 	
 	function make_quiz_category_relation($quiz_id, $category) {

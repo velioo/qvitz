@@ -21,44 +21,102 @@ class Quiz extends CI_Controller {
 			
 		if($this->session->userdata('is_logged_in')) {
 		
+			die();
+			
+			$this->load->library('upload');
+			
 			$this->db->trans_start();
 			
 			$quiz_id = $this->input->post('quiz_id');
-			$is_new = TRUE;
+			
+			if($quiz_id !== NULL) {
+				$is_new = FALSE;
+			} else {
+				$is_new = TRUE;
+			}
 			
 			$quiz_content = array();
 			
 			$quiz_content['name'] = $this->input->post('name');
 			$quiz_content['description'] = $this->input->post('description');
 			$quiz_content['type'] = $this->input->post('type');
-			$quiz_content['image'] = $this->input->post('image');
 			$quiz_content['user_id'] = $this->session->userdata('id');
-			$quiz_content['questions_count'] = $this->input->post('questions_count');
+			$quiz_content['questions_count'] = $this->input->post('questions_count');			
+			
+			if (!empty($_FILES['image']['name'])) {
+			
+				$unique_id = uniqid();
 				
-			if($quiz_id !== NULL) {
-				$is_new = FALSE;
-				$query = $this->quizes_model->update_quiz($quiz_id, $quiz_content);
+				$config['upload_path'] = './assets/quiz_images/';
+				$config['allowed_types'] = 'gif|jpg|png';
+				$config['max_size'] = 2048;
+				$config['file_name'] = $unique_id . ".jpg";
+				$config['overwrite'] = TRUE;
+			
+				$this->upload->initialize($config);
+			
+				if (!$this->upload->do_upload('image')) {
+					$error = array('error' => $this->upload->display_errors('<p class="error">', '</p>'));
+					$this->session->set_flashdata('error', $error['error']);
+				} else {
+					if(!$is_new) {
+						$image = $this->quizes_model->get_quiz_image($quiz_id);
+						if($image != '') {
+							unlink("./assets/quiz_images/{$image}");
+						}
+					}					
+					$quiz_content['image'] = $config['file_name'];
+				}
+			
+			}
+				
+			if($is_new) {
+				$query = $this->quizes_model->create_quiz($quiz_content);			
 			} else {
-				$query = $this->quizes_model->create_quiz($quiz_content);
+				$quiz_id = $this->quizes_model->update_quiz($quiz_id, $quiz_content);
 			}
 								
 			if($query !== FALSE) {
-				
-				$quiz_id = $query['quiz_id'];
 				
 				$results = array();
 				$results_count = $this->input->post('results_count');
 				
 				for($i = 0; $i < $results_count; $i++) {
+					$result_id = $this->input->post("quiz_result{$i}_id");
 					$results[$i]['quiz_id'] = $quiz_id;
 					$results[$i]['name'] = $this->input->post("quiz_result{$i}_name");
-					$results[$i]['text'] = $this->input->post("quiz_result{$i}_text");
-					$results[$i]['image'] = $this->input->post("quiz_result{$i}_image");
+					$results[$i]['text'] = $this->input->post("quiz_result{$i}_text");					
+					
+					if (!empty($_FILES["quiz_result{$i}_image"]['name'])) {
+							
+						$unique_id = uniqid();
+							
+						$config['upload_path'] = './assets/quiz_images/';
+						$config['allowed_types'] = 'gif|jpg|png';
+						$config['max_size'] = 2048;
+						$config['file_name'] = $quiz_id . "_r_" . $unique_id . ".jpg";
+						$config['overwrite'] = TRUE;
+							
+						$this->upload->initialize($config);
+							
+						if (!$this->upload->do_upload("quiz_result{$i}_image")) {
+							$error = array('error_r' => $this->upload->display_errors('<p class="error_r">', '</p>'));
+							$this->session->set_flashdata('error_r', $error['error_r']);
+						} else {
+							if(!$is_new) {
+								$image = $this->quizes_model->get_result_image($result_id);
+								if($image != '') {
+									unlink("./assets/quiz_images/{$image}");
+								}
+							}
+							$results[$i]['image'] = $config['file_name'];
+						}
+							
+					}
 					
 					if($is_new) {
 						$result_id = $this->quizes_model->add_result($results[$i]);	
 					} else {
-						$result_id = $this->input->post("quiz_result{$i}_id");
 						$query = $this->quizes_model->update_result($result_id, $results[$i]);
 					}				
 					
@@ -83,18 +141,44 @@ class Quiz extends CI_Controller {
 				$questions = array();
 				
 				for($i = 0; $i < $quiz_content['questions_count']; $i++) {
+					$question_id = $this->input->post("question{$i}_id");
 					$questions[$i]['text'] = $this->input->post("question{$i}_text");
-					$questions[$i]['image'] = $this->input->post("question{$i}_image");
 					if($this->input->post('type') == 1) { // type 1 = test, type 2 = personality
-						$questions[$i]['correct_answer'] = $this->input->post("question{$i}_answer_number");
+						$questions[$i]['correct_answer'] = $this->input->post("question{$i}_correct_answer_number");
 					}
 					$questions[$i]['quiz_id'] = $quiz_id;
 					//$questions[$i]['user_id'] = $this->session->userdata('id');
 					
+					if (!empty($_FILES["question{$i}_image"]['name'])) {
+							
+						$unique_id = uniqid();
+							
+						$config['upload_path'] = './assets/quiz_images/';
+						$config['allowed_types'] = 'gif|jpg|png';
+						$config['max_size'] = 2048;
+						$config['file_name'] = $quiz_id . "_q_" . $unique_id . ".jpg";
+						$config['overwrite'] = TRUE;
+							
+						$this->upload->initialize($config);
+							
+						if (!$this->upload->do_upload("question{$i}_image")) {
+							$error = array('error_q' => $this->upload->display_errors('<p class="error_q">', '</p>'));
+							$this->session->set_flashdata('error_q', $error['error_q']);
+						} else {
+							if(!$is_new) {
+								$image = $this->quizes_model->get_question_image($question_id);
+								if($image != '') {
+									unlink("./assets/quiz_images/{$image}");
+								}
+							}
+							$questions[$i]['image'] = $config['file_name'];
+						}
+							
+					}
+									
 					if($is_new) {
 						$question_id = $this->quizes_model->add_question($questions[$i]);						
-					} else {
-						$question_id = $this->input->post("question{$i}_id");
+					} else {						
 						$query = $this->quizes_model->update_question($question_id, $questions[$i]);
 					}				
 														
@@ -102,10 +186,10 @@ class Quiz extends CI_Controller {
 					$answers_count = $this->input->post("question{$i}_answers_count");
 					
 					for($j = 0; $j < $answers_count; $j++) {
+						$answer_id = $this->input->post("question{$i}_answer{$j}_id");
 						$answers[$j]['text'] = $this->input->post("question{$i}_answer{$j}_text");
-						$answers[$j]['image'] = $this->input->post("question{$i}_answer{$j}_image");
 						$answers[$j]['number'] = $this->input->post("question{$i}_answer{$j}_number");
-						$answers[$j]['question_id'] = $question_id;
+						$answers[$j]['question_id'] = $question_id;					
 						if($this->input->post('type') == 2) {
 							foreach($results as $result) {
 								if($result['temp_id'] == $this->input->post("question{$i}_answer{$j}_result_id")) {
@@ -114,10 +198,36 @@ class Quiz extends CI_Controller {
 							}						
 						}
 						
+				/* 		if (!empty($_FILES["question{$i}_answer{$j}_image"]['name'])) {
+								
+							$unique_id = uniqid();
+								
+							$config['upload_path'] = './assets/quiz_images/';
+							$config['allowed_types'] = 'gif|jpg|png';
+							$config['max_size'] = 2048;
+							$config['file_name'] = $quiz_id . "_a_" . $unique_id . ".jpg";
+							$config['overwrite'] = TRUE;
+								
+							$this->upload->initialize($config);
+								
+							if (!$this->upload->do_upload("question{$i}_answer{$j}_image")) {
+								$error = array('error_q' => $this->upload->display_errors('<p class="error_q">', '</p>'));
+								$this->session->set_flashdata('error_q', $error['error_q']);
+							} else {
+								if(!$is_new) {
+									$image = $this->quizes_model->get_answer_image($answer_id);
+									if($image != '') {
+										unlink("./assets/quiz_images/{$image}");
+									}
+								}
+								$answers[$j]['image'] = $config['file_name'];
+							}
+								
+						} */
+						
 						if($is_new) {
 							$query = $this->quizes_model->add_answer($answers[$j]);
-						} else {
-							$answer_id = $this->input->post("question{$i}_answer{$j}_id");
+						} else {							
 							$query = $this->quizes_model->update_answer($answer_id, $answers[$j]);
 						}
 					}														
