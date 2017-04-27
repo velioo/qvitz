@@ -10,13 +10,13 @@ Class Quizes_model extends CI_Model {
 	
 	function create_quiz($quiz_content) {
 		$query = $this->db->insert('quizes', $quiz_content);
-		return $query;
+		return $this->db->insert_id();
 	}
 	
 	function update_quiz($quiz_id, $quiz_content) {
 		$this->db->where('id', $quiz_id);
 		$query = $this->db->update('quizes', $quiz_content);
-		return $this->db->insert_id();
+		return $query;
 	}
 	
 	function delete_quiz($quiz_id) {

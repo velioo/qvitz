@@ -13,6 +13,10 @@
 	margin-bottom: 20px;
 }
 
+#quiz_form {
+	display: none;
+}
+
 .quiz_input {
 	width: 100%;
 	border: 2px solid #dadada;
@@ -67,9 +71,6 @@
 }
 
 .remove_image {
-	position: absolute;
-	margin-top: -34px;
-	margin-left: 200px;
 	display: inline-block;
 	border: 1px solid #dadada;
 	display: none;
@@ -85,8 +86,8 @@
 	border: 2px solid #dadada;
 }
 
-.question_div {
-
+.question_div:not(:first-child) {
+	border-top: 1px solid #dadada;
 }
 
 .answer_div {
@@ -96,6 +97,64 @@
 	border-top: 1px solid #dadada;
 }
 
+.result_div:not(:first-child) {
+	margin-top: 30px;
+}
+
+#add_question_button, #add_result_button {
+	width: 100%;
+}
+
+#add_result_button {
+	margin-top: 20px;
+}
+
+#submit_quiz {
+	padding: 10px 15px 10px 15px;
+	margin-top: 25px;
+}
+
+#quiz_results_div {
+	background-color: white;
+	margin-top: 15px;
+	color: black;
+	height: auto;
+	text-align: left;
+	padding: 10px 10px 35px 10px;
+	border: 2px solid #dadada;
+}
+
+.slider-range {
+	text-align: center;
+	width: 50%;
+	margin-left: 25%;
+	margin-right: 25%;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.show_slider_numbers {
+	width: 50%;
+	margin-left: 25%;
+	margin-right: 25%;
+}
+
+.left_slide {
+	float:left;
+}
+
+.right_slide {
+	float:right;
+}
+
+.num_of_correct {
+	margin-top: 10px;
+}
+
 .error_i {
+	color: red;
+}
+
+.error {
 	color: red;
 }

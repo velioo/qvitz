@@ -16,7 +16,7 @@ if (isset($this->session->userdata['is_logged_in'])) {
 	<?php } else if(isset($message_display)){?>
 		<h1 class="main_title"><?php echo $message_display;?></h1>
 	<?php } else {?>
-		<h1 class="main_title"><?php if(isset($header)) { echo "<h1>" . $header . "</h1>";} ?></h1>
+		<h1 class="main_title"><?php if(isset($header)) { echo $header;} ?></h1>
 	<?php }?>
 		<br/><br/><br/>
 
