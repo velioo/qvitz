@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time:  3 апр 2017 в 17:07
+-- Generation Time: 30 апр 2017 в 00:54
 -- Версия на сървъра: 10.1.16-MariaDB
 -- PHP Version: 7.0.9
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `qvitz`
 --
+CREATE DATABASE IF NOT EXISTS `qvitz` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `qvitz`;
 
 -- --------------------------------------------------------
 
@@ -78,6 +80,19 @@ CREATE TABLE `facebook_accounts` (
 -- --------------------------------------------------------
 
 --
+-- Структура на таблица `notification_users`
+--
+
+CREATE TABLE `notification_users` (
+  `id` int(11) NOT NULL,
+  `notification_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `seen` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура на таблица `notifications`
 --
 
@@ -88,20 +103,7 @@ CREATE TABLE `notifications` (
   `description` varchar(255) NOT NULL,
   `type` varchar(64) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `additional_info` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `notification_users`
---
-
-CREATE TABLE `notification_users` (
-  `id` int(11) NOT NULL,
-  `notification_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `seen` tinyint(1) NOT NULL DEFAULT '0'
+  `additional_info` varchar(50) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -118,24 +120,6 @@ CREATE TABLE `questions` (
   `correct_answer` int(11) DEFAULT NULL,
   `quiz_id` int(11) DEFAULT NULL,
   `image` varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `quizes`
---
-
-CREATE TABLE `quizes` (
-  `id` int(11) NOT NULL,
-  `name` varchar(128) NOT NULL,
-  `description` text NOT NULL,
-  `type` tinyint(2) NOT NULL,
-  `image` varchar(128) DEFAULT NULL,
-  `user_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `questions_count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -166,6 +150,24 @@ CREATE TABLE `quiz_results` (
   `text` text NOT NULL,
   `name` varchar(64) NOT NULL,
   `image` varchar(128) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `quizes`
+--
+
+CREATE TABLE `quizes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `description` text NOT NULL,
+  `type` tinyint(2) NOT NULL,
+  `image` varchar(128) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `questions_count` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -210,6 +212,28 @@ CREATE TABLE `sessions` (
 -- --------------------------------------------------------
 
 --
+-- Структура на таблица `user_category_likes`
+--
+
+CREATE TABLE `user_category_likes` (
+  `user_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `user_quiz_likes`
+--
+
+CREATE TABLE `user_quiz_likes` (
+  `user_id` int(11) NOT NULL,
+  `quiz_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Структура на таблица `users`
 --
 
@@ -237,28 +261,6 @@ CREATE TABLE `users_history` (
   `result` varchar(128) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `score` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `user_category_likes`
---
-
-CREATE TABLE `user_category_likes` (
-  `user_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `user_quiz_likes`
---
-
-CREATE TABLE `user_quiz_likes` (
-  `user_id` int(11) NOT NULL,
-  `quiz_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -296,13 +298,6 @@ ALTER TABLE `facebook_accounts`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `notifications`
---
-ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `creator_id` (`creator_id`);
-
---
 -- Indexes for table `notification_users`
 --
 ALTER TABLE `notification_users`
@@ -311,18 +306,18 @@ ALTER TABLE `notification_users`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `creator_id` (`creator_id`);
+
+--
 -- Indexes for table `questions`
 --
 ALTER TABLE `questions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `quiz_id` (`quiz_id`);
-
---
--- Indexes for table `quizes`
---
-ALTER TABLE `quizes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `quiz_comments`
@@ -341,6 +336,19 @@ ALTER TABLE `quiz_results`
   ADD KEY `quiz_id` (`quiz_id`);
 
 --
+-- Indexes for table `quizes`
+--
+ALTER TABLE `quizes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `ranks`
+--
+ALTER TABLE `ranks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `score_system`
 --
 ALTER TABLE `score_system`
@@ -354,6 +362,20 @@ ALTER TABLE `score_system`
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sessions_timestamp` (`timestamp`);
+
+--
+-- Indexes for table `user_category_likes`
+--
+ALTER TABLE `user_category_likes`
+  ADD KEY `user_id` (`user_id`,`category_id`),
+  ADD KEY `category_id` (`category_id`);
+
+--
+-- Indexes for table `user_quiz_likes`
+--
+ALTER TABLE `user_quiz_likes`
+  ADD KEY `quiz_id` (`quiz_id`,`user_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `users`
@@ -371,20 +393,6 @@ ALTER TABLE `users_history`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `user_category_likes`
---
-ALTER TABLE `user_category_likes`
-  ADD KEY `user_id` (`user_id`,`category_id`),
-  ADD KEY `category_id` (`category_id`);
-
---
--- Indexes for table `user_quiz_likes`
---
-ALTER TABLE `user_quiz_likes`
-  ADD KEY `quiz_id` (`quiz_id`,`user_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -397,16 +405,11 @@ ALTER TABLE `answers`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `facebook_accounts`
 --
 ALTER TABLE `facebook_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
---
--- AUTO_INCREMENT for table `notifications`
---
-ALTER TABLE `notifications`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `notification_users`
@@ -414,9 +417,14 @@ ALTER TABLE `notifications`
 ALTER TABLE `notification_users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `quizes`
+-- AUTO_INCREMENT for table `notifications`
 --
-ALTER TABLE `quizes`
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `questions`
+--
+ALTER TABLE `questions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `quiz_comments`
@@ -429,10 +437,15 @@ ALTER TABLE `quiz_comments`
 ALTER TABLE `quiz_results`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `quizes`
+--
+ALTER TABLE `quizes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Ограничения за дъмпнати таблици
 --
@@ -441,8 +454,8 @@ ALTER TABLE `users`
 -- Ограничения за таблица `answers`
 --
 ALTER TABLE `answers`
-  ADD CONSTRAINT `answers_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`result_id`) REFERENCES `quiz_results` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`result_id`) REFERENCES `quiz_results` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `answers_ibfk_3` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ограничения за таблица `categories_quizes`
@@ -458,12 +471,6 @@ ALTER TABLE `facebook_accounts`
   ADD CONSTRAINT `facebook_accounts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ограничения за таблица `notifications`
---
-ALTER TABLE `notifications`
-  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Ограничения за таблица `notification_users`
 --
 ALTER TABLE `notification_users`
@@ -471,16 +478,16 @@ ALTER TABLE `notification_users`
   ADD CONSTRAINT `notification_users_ibfk_2` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Ограничения за таблица `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`creator_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Ограничения за таблица `questions`
 --
 ALTER TABLE `questions`
   ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Ограничения за таблица `quizes`
---
-ALTER TABLE `quizes`
-  ADD CONSTRAINT `quizes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Ограничения за таблица `quiz_comments`
@@ -497,18 +504,17 @@ ALTER TABLE `quiz_results`
   ADD CONSTRAINT `quiz_results_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Ограничения за таблица `quizes`
+--
+ALTER TABLE `quizes`
+  ADD CONSTRAINT `quizes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
 -- Ограничения за таблица `score_system`
 --
 ALTER TABLE `score_system`
   ADD CONSTRAINT `score_system_ibfk_1` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `score_system_ibfk_2` FOREIGN KEY (`result_id`) REFERENCES `quiz_results` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Ограничения за таблица `users_history`
---
-ALTER TABLE `users_history`
-  ADD CONSTRAINT `users_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `users_history_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Ограничения за таблица `user_category_likes`
@@ -523,6 +529,13 @@ ALTER TABLE `user_category_likes`
 ALTER TABLE `user_quiz_likes`
   ADD CONSTRAINT `user_quiz_likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_quiz_likes_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения за таблица `users_history`
+--
+ALTER TABLE `users_history`
+  ADD CONSTRAINT `users_history_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_history_ibfk_2` FOREIGN KEY (`quiz_id`) REFERENCES `quizes` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

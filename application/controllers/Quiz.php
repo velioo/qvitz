@@ -233,7 +233,7 @@ class Quiz extends CI_Controller {
 					}														
 				}
 				
-				$categories = $this->input->get('category[]');
+				$categories = $this->input->post('category[]');
 				for ($i = 0; $i < count($categories); $i++) {
 					$categories[$i] = str_replace("_", " ", $categories[$i]);
 					$categories[$i] = ucwords($categories[$i]);
@@ -254,7 +254,11 @@ class Quiz extends CI_Controller {
 					}
 					
 					$this->load->model('levels_model');
-					$this->levels_model->add_points($this->session->userdata('id'), $points);
+					$query = $this->levels_model->add_points($this->session->userdata('id'), $points);
+					
+					if($query !== TRUE && $query !== FALSE) {
+						$this->new_level_notification($query);
+					}
 				}						
 				
 				$this->db->trans_complete();		
@@ -267,6 +271,16 @@ class Quiz extends CI_Controller {
 		} else {
 			$this->helpers_model->bad_request();
 		}
+	}
+	
+	public function new_level_notification($rank_level) {		
+		$this->load->model('notifications_model');
+		$user_id = $this->session->userdata('id');
+		$type = "level";
+		$description = "You've reached level " . $rank_level['rank_number'] . " - " . $rank_level['name'];
+		$notification_id = $this->notifications_model->add_notification($user_id, $description, $type);
+		$this->notifications_model->spread_notification($notification_id, $user_id);
+		return TRUE;
 	}
 	
 	public function delete_quiz() {

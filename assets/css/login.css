@@ -82,8 +82,22 @@ input.submit {
 }
 
 .error {
+	text-align: center;
 	color:red;
 	display:inline-block;
 	margin-top: 10px;
 }
 
+.success {
+	text-align: center;
+	color:green;
+	display:block;
+	margin-top: 10px;
+}
+
+.fail {
+	text-align: center;
+	color:red;
+	display:block;
+	margin-top: 10px;
+}

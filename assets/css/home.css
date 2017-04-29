@@ -445,7 +445,8 @@
 	
 	.wrap_notification_username_description {
 		display: inline-block;
-		width: 240px;
+		width: 242px;
+		margin-left: 3px;
 	}
 	
 	.notification_username {

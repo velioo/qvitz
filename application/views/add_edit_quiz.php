@@ -16,6 +16,8 @@ if (!$logged) {
 
 	$(document).ready(function() {
 		$('head').append('<script src="<?php echo asset_url() . "js/create_quiz.js";?>">');
+		var genres_checkbox = "<?php echo asset_url() . "imgs/genres_checkbox.png";?>";
+		$('label.css-label').css('background-image', 'url(' + genres_checkbox + ')');
 	});
 
 	function asset_url() {
@@ -51,6 +53,39 @@ if (!$logged) {
 				  	echo $this->session->flashdata('error');
 			  }
 			?>
+			<h3>Choose Categories:</h3>
+			<div id="categories_tab" class="tab-pane">
+		  		<div class="category_div"><input id="animals_category" type="checkbox" name="category[]" value="animals" class="css-checkbox"> <label for="animals_category" class="css-label">Animals</label></div>
+		  		<div class="category_div"><input id="anime_category" type="checkbox" name="category[]" value="anime" class="css-checkbox"> <label for="anime_category" class="css-label">Anime</label></div>
+		  		<div class="category_div"><input id="audio_category" type="checkbox" name="category[]" value="audio" class="css-checkbox"> <label for="audio_category" class="css-label">Audio</label></div>
+		  		<div class="category_div"><input id="big_stories_category" type="checkbox" name="category[]" value="big_stories" class="css-checkbox"> <label for="big_stories_category" class="css-label">Big Stories</label></div>
+		  		<div class="category_div"><input id="books_category" type="checkbox" name="category[]" value="books" class="css-checkbox"> <label for="books_category" class="css-label">Books</label></div>
+		  		<div class="category_div"><input id="business_category" type="checkbox" name="category[]" value="business" class="css-checkbox"> <label for="business_category" class="css-label">Business</label></div>
+		  		<div class="category_div"><input id="buzz_category" type="checkbox" name="category[]" value="buzz" class="css-checkbox"> <label for="buzz_category" class="css-label">Buzz</label></div>
+		  		<div class="category_div"><input id="celebrity_category" type="checkbox" name="category[]" value="celebrity" class="css-checkbox"> <label for="celebrity_category" class="css-label">Celebrity</label></div>
+		  		<div class="category_div"><input id="community_category" type="checkbox" name="category[]" value="community" class="css-checkbox"> <label for="community_category" class="css-label">Community</label></div>
+		  		<div class="category_div"><input id="entertainment_category" type="checkbox" name="category[]" value="entertainment" class="css-checkbox"> <label for="entertainment_category" class="css-label">Entertainment</label></div>
+		  		<div class="category_div"><input id="food_category" type="checkbox" name="category[]" value="food" class="css-checkbox"> <label for="food_category" class="css-label">Food</label></div>
+		  		<div class="category_div"><input id="geeky_category" type="checkbox" name="category[]" value="geeky" class="css-checkbox"> <label for="geeky_category" class="css-label">Geeky</label></div>
+		  		<div class="category_div"><input id="health_category" type="checkbox" name="category[]" value="health" class="css-checkbox"> <label for="health_category" class="css-label">Health</label></div>
+		  		<div class="category_div"><input id="lgbt_category" type="checkbox" name="category[]" value="lgbt" class="css-checkbox"> <label for="lgbt_category" class="css-label">LGBT</label></div>
+		  		<div class="category_div"><input id="life_category" type="checkbox" name="category[]" value="life" class="css-checkbox"> <label for="life_category" class="css-label">Life</label></div>
+		  		<div class="category_div"><input id="music_category" type="checkbox" name="category[]" value="music" class="css-checkbox"> <label for="music_category" class="css-label">Music</label></div>
+		  		<div class="category_div"><input id="parents_category" type="checkbox" name="category[]" value="parents" class="css-checkbox"> <label for="parents_category" class="css-label">Parents</label></div>
+		  		<div class="category_div"><input id="podcasts_category" type="checkbox" name="category[]" value="podcasts" class="css-checkbox"> <label for="podcasts_category" class="css-label">Podcasts</label></div>
+		  		<div class="category_div"><input id="politics_category" type="checkbox" name="category[]" value="politics" class="css-checkbox"> <label for="politics_category" class="css-label">Politics</label></div>
+		  		<div class="category_div"><input id="puzzles_category" type="checkbox" name="category[]" value="puzzles" class="css-checkbox"> <label for="puzzles_category" class="css-label">Puzzles</label></div>
+		  		<div class="category_div"><input id="reader_category" type="checkbox" name="category[]" value="reader" class="css-checkbox"> <label for="reader_category" class="css-label">Reader</label></div>
+		  		<div class="category_div"><input id="rewind_category" type="checkbox" name="category[]" value="rewind" class="css-checkbox"> <label for="rewind_category" class="css-label">Rewind</label></div>
+		  		<div class="category_div"><input id="science_category" type="checkbox" name="category[]" value="science" class="css-checkbox"> <label for="science_category" class="css-label">Science</label></div>
+		  		<div class="category_div"><input id="shopping_category" type="checkbox" name="category[]" value="shopping" class="css-checkbox"> <label for="shopping_category" class="css-label">Shopping</label></div>
+		  		<div class="category_div"><input id="sports_category" type="checkbox" name="category[]" value="sports" class="css-checkbox"> <label for="sports_category" class="css-label">Sports</label></div>
+		  		<div class="category_div"><input id="style_category" type="checkbox" name="category[]" value="style" class="css-checkbox"> <label for="style_category" class="css-label">Style</label></div>
+		  		<div class="category_div"><input id="tech_category" type="checkbox" name="category[]" value="tech" class="css-checkbox"> <label for="tech_category" class="css-label">Tech</label></div>
+		  		<div class="category_div"><input id="travel_category" type="checkbox" name="category[]" value="travel" class="css-checkbox"> <label for="travel_category" class="css-label">Travel</label></div>
+		  		<div class="category_div"><input id="weddings_category" type="checkbox" name="category[]" value="weddings" class="css-checkbox"> <label for="weddings_category" class="css-label">Weddings</label></div>
+		  		<div class="category_div"><input id="world_category" type="checkbox" name="category[]" value="world" class="css-checkbox"> <label for="world_category" class="css-label">World</label></div>
+		  	</div>
 			<div id="quiz_creation_div">
 				<div class="question_div" data-id="1">
 					<h3>Question: 1</h3>

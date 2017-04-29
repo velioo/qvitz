@@ -158,3 +158,48 @@
 .error {
 	color: red;
 }
+
+.categories_tab {
+	background-color: white;
+	margin-left: 1px;
+	padding: 15px;
+	color: black;
+	font-size: 16px;
+	min-height: 60px;
+}
+
+input[type=checkbox].css-checkbox {
+	position:absolute; z-index:-1000; left:-1000px; overflow: hidden; clip: rect(0 0 0 0); height:1px; width:1px; margin:-1px; padding:0; border:0;
+}
+
+input[type=checkbox].css-checkbox + label.css-label {
+	padding-left:20px;
+	height:15px; 
+	display:inline-block;
+	line-height:15px;
+	background-repeat:no-repeat;
+	background-position: 0 0;
+	font-size:13px;
+	vertical-align:middle;
+	cursor:pointer;
+
+}
+
+input[type=checkbox].css-checkbox:checked + label.css-label {
+	background-position: 0 -15px;
+}
+
+label.css-label {
+/* background-image:url(http://csscheckbox.com/checkboxes/u/csscheckbox_0aad05d7af20863960296dafb24c4f30.png); */
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+}
+
+.category_div {
+	display: inline-block;
+	width: 150px;
+}

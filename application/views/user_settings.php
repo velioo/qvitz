@@ -13,8 +13,20 @@ if (!$logged) {
 	<?php if($logged) { ?>
 		
 		<h1 class="main_title">Account settings</h1>
-
-		<p class="error"><?php if(isset($message) || ($this->session->flashdata('message') != NULL) ) { if($this->session->flashdata('message') != NULL) {$message = $this->session->flashdata('message');}  if (stripos($message, 'successfully') !== false) { echo "<span style='color:green;'>" . $message . "</span>"; } else { echo "<span style='color:red;'>" . $message ."</span>"; } }?></p>
+		<br>
+		<?php 
+			if(isset($message) || ($this->session->flashdata('message') != NULL) ) { 
+				if($this->session->flashdata('message') != NULL) {
+					$message = $this->session->flashdata('message');
+				}  
+				if (stripos($message, 'successfully') !== false) {
+					echo "<p class='success'>" . $message . "</p>"; 
+				} else { 
+					echo "<p class='fail'>" . $message ."</p>"; 
+				} 
+			}
+		?>
+		
 	 	<?php 
 		 	$label_attr = array(
 		 			'class' => 'signup_label'

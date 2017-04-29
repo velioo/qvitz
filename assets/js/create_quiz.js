@@ -91,7 +91,7 @@ $(document).ready(function() {
 		
 		var new_question = '<div class="question_div" data-id="' + questions_count + '">\
 							<h3>Question: ' + questions_count + '</h3>\
-							<label>Question</label><input type="text" name="question1_text" class="quiz_input question_text_input">\
+							<label>Question</label><input type="text" name="question' + questions_count +'_text" class="quiz_input question_text_input">\
 							Optional\
 							<input type="file" name="question' + questions_count + '_image" accept="image/*" class="filestyle quiz_image" data-classButton="btn btn-primary" data-input="false" data-classIcon="icon-plus" data-buttonText="Choose Picture...">\
 							<img src="" class="image_display">\
@@ -204,7 +204,13 @@ $(document).ready(function() {
 		if(quiz_image === '') {
 			$("<p class='error'>Quiz must contain Image!</p>").insertBefore($('#name'));		
 			scroll = true;
-		}				
+		}		
+		
+
+		if(!$('input:checkbox').is(':checked')) {
+			$("<p class='error'>You must choose at lease one Category!</p>").insertBefore($('#name'));		
+			scroll = true;
+		}
 		
 		$('.question_text_input').each(function() {
 			var question_name = $.trim($(this).val());
@@ -230,7 +236,7 @@ $(document).ready(function() {
 	
 	function scrollTo(element) {
 		$('html, body').animate({
-	        scrollTop: element.offset().top - 200
+	        scrollTop: element.offset().top - 350
 	    }, 200);
 	}
 	
