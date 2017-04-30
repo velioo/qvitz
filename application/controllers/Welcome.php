@@ -7,16 +7,18 @@ class Welcome extends CI_Controller {
 		parent::__construct();
 	}
 	
-	public function index() {	
+	public function index() {			
 		
-		$data = array();
+		$this->load->model('quizes_model');
 		
-		if($this->session->userdata('is_logged_in')) {
-			$data['header'] = "Welcome back {$this->session->userdata('username')}";
-		} else {
-			$data['header'] = "Qvitz is a platform for creating and making quizes";
-		}
+		$total_quizes = $this->quizes_model->get_total_quizes_count();
 		
+		if($total_quizes !== FALSE) {
+			$data['limit'] = 10;
+			$data['total_groups'] = ceil($total_quizes/$data['limit']);
+		}		
+		
+		$data['header'] = "Latest Quizes";
 		$data['title'] = 'Qvitz';
 		$data['css'] = 'home.css';
 		$this->load->view('home', $data);

@@ -88,6 +88,28 @@ Class Quizes_model extends CI_Model {
 		return $query;
 	}
 	
+	function get_quiz_info($quiz_id) {
+		$this->db->select('quizes.*, users.username, group_concat(c.name) as categories');
+		$this->db->where('quizes.id', $quiz_id);
+		$this->db->join('users', 'users.id=quizes.user_id');
+		$this->db->join('categories_quizes as cq', 'cq.quiz_id=quizes.id');
+		$this->db->join('categories as c', 'c.id=cq.category_id');
+		$query = $this->db->get('quizes');
+		return $query->row_array();
+	}
+	
+	function get_quiz_questions($quiz_id) {
+		$this->db->where('questions.quiz_id', $quiz_id);
+		$query = $this->db->get('questions');
+		return $query->result_array();
+	}
+	
+	function get_question_answers($question_id) {
+		$this->db->where('answers.question_id', $question_id);
+		$query = $this->db->get('answers');
+		return $query->result_array();
+	}
+	
 	function get_quiz_image($quiz_id) {
 		$this->db->select('image');
 		$this->db->where('id', $quiz_id);
@@ -114,6 +136,33 @@ Class Quizes_model extends CI_Model {
 		$this->db->where('id', $answer_id);
 		$query = $this->db->get('answers');
 		return $query->row_array()['image'];
+	}
+	
+	function get_quizes($limit, $offset) {
+		$this->db->select('quizes.*, users.username, users.avatar');
+		$this->db->join('users', 'users.id=quizes.user_id');
+		$this->db->limit($limit, $offset);
+		$this->db->order_by('created_at', 'DESC');
+		$query = $this->db->get('quizes');
+		return $query->result_array();
+	}
+	
+	function get_total_quizes_count() {
+		$this->db->select('COUNT(id) as count');
+		$query = $this->db->get('quizes');
+		return $query->row_array()['count'];
+	}
+	
+	function get_result($quiz_id, $num_correct_answers) {
+		$this->db->select('qr.*, quizes.name as quiz_name');
+		$this->db->where('qr.quiz_id', $quiz_id);
+		$this->db->where("{$num_correct_answers} BETWEEN bottom_limit AND top_limit");
+		$this->db->join('quizes', 'quizes.id=qr.quiz_id');
+		$this->db->join('score_system as ss', 'ss.result_id=qr.id');
+		$this->db->order_by('ss.bottom_limit', 'ASC');
+		$query = $this->db->get('quiz_results as qr');
+
+		return $query;
 	}
 	
 	function make_quiz_category_relation($quiz_id, $category) {

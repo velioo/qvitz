@@ -8,7 +8,8 @@ Class Levels_model extends CI_Model {
 		parent::__construct();
 	}
 
-	function add_points($user_id, $points) {		
+	function add_points($points) {
+		$user_id = $this->session->userdata('id');		
 		$this->db->select('points');
 		$this->db->where('id', $user_id);
 		$query = $this->db->get('users');

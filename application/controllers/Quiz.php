@@ -17,6 +17,22 @@ class Quiz extends CI_Controller {
 		$this->load->view('add_edit_quiz', $data);
 	}
 	
+	public function do_quiz($quiz_id) {
+		
+		$quiz_info = $this->quizes_model->get_quiz_info($quiz_id);		
+		$quiz_info['questions'] = $this->quizes_model->get_quiz_questions($quiz_id);
+		
+		for($i = 0; $i < count($quiz_info['questions']); $i++) {
+			$quiz_info['questions'][$i]['answers'] = $this->quizes_model->get_question_answers($quiz_info['questions'][$i]['id']);			
+		}
+
+		$data['quiz'] = $quiz_info;
+		$data['header'] = $quiz_info['name'];
+		$data['title'] = 'Do Quiz';
+		$data['css'] = 'do_quiz.css';
+		$this->load->view('do_quiz', $data);
+	}
+	
 	public function submit_quiz() {
 			
 		if($this->session->userdata('is_logged_in')) {
@@ -126,8 +142,8 @@ class Quiz extends CI_Controller {
 					$top_percentage = $this->input->post("quiz_result{$i}_top_limit");
 					$bottom_percentage = $this->input->post("quiz_result{$i}_bottom_limit");					
 					
-					$score_system['top_limit'] = floor($quiz_content['questions_count'] * $top_percentage/100);
-					$score_system['bottom_limit'] = ceil($quiz_content['questions_count'] * $bottom_percentage/100);
+					$score_system['top_limit'] = round($quiz_content['questions_count'] * $top_percentage/100);
+					$score_system['bottom_limit'] = round($quiz_content['questions_count'] * $bottom_percentage/100);
 					
 					$score_system['result_id'] = $result_id;
 					
@@ -243,18 +259,22 @@ class Quiz extends CI_Controller {
 				$questions_count = $this->input->post('questions_count');
 				
 				if($is_new) { // only add points to user if he is making new quiz not updating one
-					if($questions_count < 10) {
-						$points = 2;
-					} else if($questions_count < 20){
-						$points = 4;
-					} else if($questions_count < 40) {
-						$points = 6;
+					if($questions_count < 5) {
+						$points = 3;
+					} else if($questions_count < 10){
+						$points = 7;
+					} else if($questions_count < 20) {
+						$points = 15;
+					} else if($questions_count < 30){
+						$points = 25;
+					} else if($questions_count < 40){ 
+						$points = 35;
 					} else {
-						$points = 10;
+						$points = 40;
 					}
 					
 					$this->load->model('levels_model');
-					$query = $this->levels_model->add_points($this->session->userdata('id'), $points);
+					$query = $this->levels_model->add_points($points);
 					
 					if($query !== TRUE && $query !== FALSE) {
 						$this->new_level_notification($query);
@@ -271,6 +291,120 @@ class Quiz extends CI_Controller {
 		} else {
 			$this->helpers_model->bad_request();
 		}
+	}
+	
+	public function get_result() {
+					
+		$quiz_id = $this->input->post('quiz_id');
+		$num_correct_answers = $this->input->post('num_correct_answers');
+		$questions_count = $this->input->post('questions_count');
+
+		if($this->session->userdata('is_logged_in') === TRUE) {
+			$this->load->model('history_model');
+			$this->load->model('users_model');
+			$this->load->model('levels_model');
+			
+			$made_quiz = $this->history_model->check_if_user_made_quiz($quiz_id);
+			
+			if($made_quiz === FALSE) {
+				$points_to_add = calculate_points($questions_count);
+				
+				$query = $this->levels_model->add_points($points_to_add);
+					
+				if($query !== TRUE && $query !== FALSE) {
+					$this->new_level_notification($query);
+				}
+			}
+			
+			$this->history_model->update_history($quiz_id, $num_correct_answers);
+		}
+		
+		$query = $this->quizes_model->get_result($quiz_id, $num_correct_answers);
+		
+		if($query !== FALSE) {		
+
+			$result = $query->row_array();
+			
+			$element = '<div class="result_div">
+							<p class="quiz_title2">' . $result['quiz_name'] .'</p>
+							<p class="result_score">You got ' . $num_correct_answers .' out of ' . $questions_count .' right!</p>
+							<p class="result_title">' . $result['name'] .'</p>
+							<p class="result_description">' . $result['text'] . '</p>';
+							if($result['image'] != "") {
+								$element.='<img src="' .  asset_url() . "quiz_images/{$result['image']}" . '"class="result_image">';
+							}							
+			$element.='</div>';
+			
+			echo $element;
+		} 
+		
+	}
+	
+	public function load_quizes() {
+		
+		$limit = $this->input->post('limit');
+		$offset = $this->input->post('group_number');
+		
+		$quizes = $this->quizes_model->get_quizes($limit, $offset);
+				
+		$elements = array();
+		
+		foreach($quizes as $quiz) {			
+			
+			$onerror_url = asset_url() . "img/logo.jpg";
+			
+			$current_time = $date = date('Y-m-d H:i:s');
+			$current_time = strtotime($current_time);
+			$date_created = strtotime($quiz['created_at']);
+			
+			$time_difference = $current_time - $date_created;
+			
+			if($time_difference < 60) {
+				$time_ago = $time_difference . " seconds ago";
+			} else if($time_difference >= 60 && $time_difference < 3600) {
+				$time_ago = round($time_difference / 60);
+				if($time_ago == 1) {
+					$time_ago.=" minute ago";
+				} else {
+					$time_ago.=" minutes ago";
+				}
+			} else if($time_difference >= 3600 && $time_difference < 86400) {
+				$time_ago = round($time_difference / 3600);
+				if($time_ago == 1) {
+					$time_ago.=" hour ago";
+				} else {
+					$time_ago.=" hours ago";
+				}
+			} else {
+				$time_ago = round(($time_difference / (3600 * 24)));
+				if($time_ago == 1) {
+					$time_ago.=" day ago";
+				} else {
+					$time_ago.=" days ago";
+				}
+			}
+			
+			$element = "<a href=" . site_url("quiz/do_quiz/{$quiz['id']}") . " class='disable-link-decoration quiz_box_link'>
+						<div class='quiz_box'>
+							<div class='quiz_box_image_div'>
+								<img src='" . asset_url() . "quiz_images/{$quiz['image']}" . "' onerror='this.onerror=null;this.src=\"" . $onerror_url . "\";' class='quiz_box_image'>
+							</div>
+							<div class='quiz_box_text'>
+								<div class='quiz_title'>" . $quiz['name'] . "</div>
+								<div class='quiz_description'>" . $quiz['description'] . "</div>
+								<div class='quiz_creator'> Made by " . $quiz['username'] . " &middot; $time_ago</div>
+							</div>
+						</div>
+					</a>";
+			
+			$elements[] = $element;
+			
+		}
+		
+		foreach($elements as $element) {
+			echo $element;
+		}
+		
 	}
 	
 	public function new_level_notification($rank_level) {		
