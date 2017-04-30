@@ -49,19 +49,47 @@ $(document).ready(function() {
 	
 	$('#quiz_info_div').on("click", ".add_answer", function() {
 		var question_number = $(this).parent().parent().data("id");
-		var answer_number = parseInt($(this).parent().children().first().val(), 10);
-		answer_number++;
+		var answers_count = parseInt($(this).parent().children().first().val(), 10);
+		answers_count++;
 
 		var input = $(this).parent().find('.input_answer');
 		var answer_text = input.val();
 		
-		var new_answer = '<input type="text" name="question' + question_number + '_answer' + answer_number + '_text" class="quiz_input2" value="' + answer_text + '" placeholder="Answer Text">\
-						  <input type="hidden" name="question' + question_number + '_answer' + answer_number + '_number" value="' + answer_number + '">\
-						  <input type="radio" name="question' + question_number + '_correct_answer_number" value="' + answer_number + '"><br>';
+		var new_answer = '<input type="text" name="question' + question_number + '_answer' + answers_count + '_text" class="quiz_input2" value="' + answer_text + '" placeholder="Answer Text">\
+						  <input type="hidden" name="question' + question_number + '_answer' + answers_count + '_number" class="answer_number" value="' + answers_count + '">\
+						  <input type="radio" name="question' + question_number + '_correct_answer_number" class="correct_answer" value="' + answers_count + '"><span class="delete_answer">&#10060;</span>';
 		
 		input.val("");
 		$(new_answer).insertAfter($(this));
-		$(this).parent().children().first().val(answer_number);
+		$(this).parent().children().first().val(answers_count);
+	});
+	
+	$('#quiz_info_div').on("click", ".delete_answer", function() {	
+		var answers_count = parseInt($(this).parent().children().first().val(), 10);
+		answers_count--;
+		$(this).parent().children().first().val(answers_count);
+		
+		var answer_number = parseInt($(this).prev().prev().val(), 10);
+		var question_number = $(this).parent().parent().data("id");
+		
+		var answers = $.makeArray($('.answer_number'));
+		
+		answers.reverse();
+				
+		answers.forEach(function(e) {
+			var number = parseInt($(e).val(), 10);
+			if(number > answer_number) {
+				$(e).val(answer_number);
+				$(e).attr('name', "question" + question_number + "_answer" + answer_number + "_number");
+				$(e).prev().attr('name', "question" + question_number + "_answer" + answer_number + "_text");
+				$(e).next().val(answer_number);
+				answer_number = number;
+			}
+		});		
+		$(this).prev().remove();
+		$(this).prev().remove();
+		$(this).prev().remove();
+		$(this).remove();
 	});
 	
 	function showCover(input, image) {
@@ -90,7 +118,7 @@ $(document).ready(function() {
 		questions_count++;
 		
 		var new_question = '<div class="question_div" data-id="' + questions_count + '">\
-							<h3>Question: ' + questions_count + '</h3>\
+							<h3 class="">Question: ' + questions_count + '</h3><span class="delete_element">&#10060;</span>\
 							<label>Question</label><input type="text" name="question' + questions_count +'_text" class="quiz_input question_text_input">\
 							Optional\
 							<input type="file" name="question' + questions_count + '_image" accept="image/*" class="filestyle quiz_image" data-classButton="btn btn-primary" data-input="false" data-classIcon="icon-plus" data-buttonText="Choose Picture...">\
@@ -114,7 +142,7 @@ $(document).ready(function() {
 			results_count++;
 			
 			var new_result = '<div class="result_div">\
-								<h3>Result: ' + results_count + '</h3>\
+								<h3>Result: ' + results_count + '</h3><span class="delete_element">&#10060;</span>\
 								<input type="text" name="quiz_result' + results_count + '_name" class="quiz_input" placeholder="Result">\
 								<textarea rows="5" cols="70" placeholder="Description" name="quiz_result' + results_count + '_text" class="quiz_description"></textarea>\
 								<input type="file" name="quiz_result' + results_count + '_image" accept="image/*" class="quiz_image" data-classButton="btn btn-primary" data-buttonText="Choose Picture...*">\

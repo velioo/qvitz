@@ -88,7 +88,7 @@ if (!$logged) {
 		  	</div>
 			<div id="quiz_creation_div">
 				<div class="question_div" data-id="1">
-					<h3>Question: 1</h3>
+					<h3>Question: 1</h3><span class="delete_element">&#10060;</span>
 					<label>Question</label><input type="text" name="question1_text" class="quiz_input question_text_input">
 					Optional
 					<input type="file" name="question1_image" accept="image/*" class="quiz_image" data-classButton="btn btn-primary" data-buttonText="Choose Picture...">
@@ -105,7 +105,7 @@ if (!$logged) {
 		   </div>
 		   <div id="quiz_results_div">
 		   		<div class="result_div">
-					<h3>Result: 1</h3>
+					<h3>Result: 1</h3><span class="delete_element">&#10060;</span>
 					<input type="text" name="quiz_result1_name" class="quiz_input" placeholder="Result">
 					<textarea rows="5" cols="70" placeholder="Description" name="quiz_result1_text" class="quiz_description"></textarea>
 					<input type="file" name="quiz_result1_image" accept="image/*" class="quiz_image" data-classButton="btn btn-primary" data-buttonText="Choose Picture...*">	

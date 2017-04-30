@@ -23,9 +23,10 @@
 	width: 45%;
 }
 
-.description {
-	font-size: 20px;
+.do_quiz_description {
+	font-size: 18px;
 	color: black;
+	font-family: "Open Sans",sans-serif;
 }
 
 .quiz_image_div {

@@ -66,13 +66,13 @@
 			</p>
 		</div>
 		<div class="description_div">			
-			<p class="description"><?php echo $quiz['description'];?></p>
+			<p class="do_quiz_description"><?php echo $quiz['description'];?></p>
 		</div>
 		<!-- <div class="quiz_image_div">
 			<img src="echo asset_url() . "quiz_images/{$quiz['image']}">" class="quiz_image">
 		</div> -->
 		
-		<?php foreach($quiz['questions'] as $question) {?>				
+		<?php foreach($quiz['questions'] as $question) {?>			
 			<div class="question_div" data-id="<?php echo $question['id'];?>">
 				<h3><?php echo $question['text'];?></h3>
 				<?php if($question['image'] != "") {?>

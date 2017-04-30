@@ -90,6 +90,29 @@
 	border-top: 1px solid #dadada;
 }
 
+.delete_element {
+	float: right;
+	margin-top: -45px;
+	font-size: 20px;
+	color: #E4E5E7;
+	cursor: pointer;
+}
+
+.delete_element:hover {
+	color: #6E7177;
+}
+
+.delete_answer {
+	font-size: 15px;
+	color: #E4E5E7;
+	cursor: pointer;
+	margin-left: 20px;
+}
+
+.delete_answer:hover {
+	color: #6E7177;
+}
+
 .answer_div {
 	margin-top: 10px;
 	padding-top: 10px;

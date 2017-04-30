@@ -16,7 +16,7 @@ $(document).ready(function() {
 	    	  });    
 	    	  total_records++;
         }
-        $('.quiz_box_image_div').height($('.quiz_box').height());	
+        resize_images();
         loading = false;
         $('#loader_image_div').hide(); 
      });
@@ -37,11 +37,18 @@ $(document).ready(function() {
 	                    	  });
 	                    	  total_records++;
 	                      }
+	                      resize_images();
 	                      loading = false;
 	                      $('#loader_image_div').hide(); 
 	                  });         	  
 	        }
 	    }
 	});
+	
+	function resize_images() {
+		$('.quiz_box_image_div').each(function() {
+			$(this).height($(this).next().height() + 30);	
+		});
+	}
     
 });
