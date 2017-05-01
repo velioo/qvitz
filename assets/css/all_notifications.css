@@ -16,3 +16,7 @@
 	box-shadow: 0 0 15px rgba(0,0,0,.1);
 	transition: visibility 0s, opacity 0.5s linear;
 }
+
+.wrap_notification_username_description {
+	width: 90%;
+}

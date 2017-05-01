@@ -138,7 +138,9 @@ Class Users_model extends CI_Model {
 	}
 	
 	function get_user_info_logged($username) {
-		$this->db->select('*');
+		$this->db->select('users.*, COUNT(DISTINCT uh.quiz_id) as total_quizes_made, COUNT(DISTINCT quizes.id) as total_quizes_created');
+		$this->db->join('users_history as uh', 'uh.user_id=users.id');
+		$this->db->join('quizes', 'quizes.user_id=users.id');
 		$this->db->where('username', $username);
 		$query = $this->db->get('users');
 		
@@ -160,7 +162,7 @@ Class Users_model extends CI_Model {
 	
 	function get_user_info($username, $id = 0) {
 		
-		$this->db->select('id,username,avatar,birthdate,points');
+		$this->db->select('users.id,users.username,users.avatar,users.birthdate,users.points, COUNT(DISTINCT uh.quiz_id) as total_quizes_made, COUNT(DISTINCT quizes.id) as total_quizes_created');
 		
 		if($id == 0) {		
 			$this->db->where('username', $username);	
@@ -168,6 +170,8 @@ Class Users_model extends CI_Model {
 			$this->db->where('id', $id);
 		}
 		
+		$this->db->join('users_history as uh', 'uh.user_id=users.id');
+		$this->db->join('quizes', 'quizes.user_id=users.id');
 		$query = $this->db->get('users');
 		 		
 		if ($query->num_rows() == 1) {	

@@ -20,7 +20,7 @@ class Welcome extends CI_Controller {
 		
 		$data['header'] = "Latest Quizes";
 		$data['title'] = 'Qvitz';
-		$data['css'] = 'home.css';
+		$data['css'] = 'quiz_boxes.css';
 		$this->load->view('home', $data);
 	}
 }

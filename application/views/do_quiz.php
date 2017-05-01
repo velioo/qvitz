@@ -10,6 +10,7 @@
 }?>
 
 <script src="<?php echo asset_url() . "js/do_quiz.js";?>"></script>
+<script src="<?php echo asset_url() . "jquery.ns-autogrow-1.1.6/dist/jquery.ns-autogrow.js";?>"></script>
 
 <script>
 
@@ -42,6 +43,50 @@
 		var result_url = "<?php echo site_url("quiz/get_result");?>";
 		return result_url;
 	}
+
+	function getTotalCommentGroups() {
+		var total_groups = <?php echo $total_groups;?>;
+		return total_groups;
+	}
+
+	function getLoadCommentsUrl() {
+		var url = "<?php echo site_url("quiz/load_comments");?>";
+		return url;
+	}
+
+	function getCommentReference() {
+		var comment_reference = <?php if(isset($comment_reference)) echo $comment_reference; else echo -1;?>;
+		return comment_reference;
+	}
+
+	<?php if($logged) {?>
+	
+		function getAddCommentUrl() {
+			var url = "<?php echo site_url("quiz/add_comment");?>";
+			return url;
+		}
+	
+		function getUserImage() {
+			var user_image = "<?php echo asset_url() . "user_images/{$this->session->userdata('user_avatar')}";?>";
+			return user_image;
+		}	
+	
+		function getUserName() {
+			var username = "<?php echo $this->session->userdata('username');?>";
+			return username;
+		}
+	
+		function getUserUrl() {
+			var url = "<?php  echo site_url("users/profile/{$this->session->userdata('username')}");?>";
+			return url;
+		}
+	
+		function getOnErrorUrl() {
+			var url = "<?php echo asset_url() . "imgs/Default_Avatar.jpg";?>";
+			return url;
+		}
+
+	<?php }?>
 </script>
 
 <div id="wrap">
@@ -95,6 +140,21 @@
 			<img src="<?php echo asset_url() . "imgs/loading_records.gif";?>" class="loader_image">
 		</div>
 		<button id="retake_quiz_button" class="btn btn-primary button-black"><img src="<?php echo asset_url() ."imgs/retake.png";?>" class="retake_quiz_icon">&nbsp;&nbsp;Retake Quiz</button>	
+		<?php if($logged) {?>
+		<div id="wrap_area_options">
+			<textarea rows="2" id="new_post_area" name="new_post_area" placeholder="Add comment..."></textarea>
+			<div id="post_options">
+				<label id="submit_post" class="button-blue">Post</label>
+			</div>
+		</div>
+		<div id="comments">
+		</div>
+		<?php } else {?>
+			<div class="not_logged"><span class="disable-link-decoration blue-text log_in_modal">Log in</span> to add comments</div>
+		<?php }?>
+		<div id="loader_image_div2">
+			<img src="<?php echo asset_url() . "imgs/loading_records.gif";?>" class="loader_image">
+		</div>
 	</div>
 </div>
 

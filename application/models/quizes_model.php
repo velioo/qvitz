@@ -138,8 +138,15 @@ Class Quizes_model extends CI_Model {
 		return $query->row_array()['image'];
 	}
 	
-	function get_quizes($limit, $offset) {
+	function get_quizes($limit, $offset, $input=NULL, $user_id=NULL) {
 		$this->db->select('quizes.*, users.username, users.avatar');
+		if($input != NULL) {
+			$this->db->like('name', $input);
+			$this->db->or_like('description', $input);
+		}
+		if($user_id != NULL) {
+			$this->db->where('users.id', $user_id);
+		}
 		$this->db->join('users', 'users.id=quizes.user_id');
 		$this->db->limit($limit, $offset);
 		$this->db->order_by('created_at', 'DESC');
@@ -147,11 +154,40 @@ Class Quizes_model extends CI_Model {
 		return $query->result_array();
 	}
 	
-	function get_total_quizes_count() {
-		$this->db->select('COUNT(id) as count');
+	function get_total_quizes_count($input=NULL, $user_id=NULL) {
+		$this->db->select('COUNT(quizes.id) as count');
+		if($input != NULL) {
+			$this->db->like('name', $input);
+			$this->db->or_like('description', $input);
+		}
+		if($user_id != NULL) {
+			$this->db->where('users.id', $user_id);
+		}
+		$this->db->join('users', 'users.id=quizes.user_id');
 		$query = $this->db->get('quizes');
 		return $query->row_array()['count'];
 	}
+	
+	function get_quizes_category($limit, $offset, $category) {
+		$this->db->select('quizes.*, users.username, users.avatar');
+		$this->db->where('c.name', $category);
+		$this->db->join('users', 'users.id=quizes.user_id');
+		$this->db->join('categories_quizes as cq', 'cq.quiz_id=quizes.id');
+		$this->db->join('categories as c', 'c.id=cq.category_id');
+		$this->db->limit($limit, $offset);
+		$this->db->order_by('created_at', 'DESC');
+		$query = $this->db->get('quizes');
+		return $query->result_array();
+	}
+	
+	function get_total_quizes_count_category($category) {
+		$this->db->select('COUNT(quizes.id) as count');
+		$this->db->where('c.name', $category);
+		$this->db->join('categories_quizes as cq', 'cq.quiz_id=quizes.id');
+		$this->db->join('categories as c', 'c.id=cq.category_id');
+		$query = $this->db->get('quizes');
+		return $query->row_array()['count'];
+	}	
 	
 	function get_result($quiz_id, $num_correct_answers) {
 		$this->db->select('qr.*, quizes.name as quiz_name');
@@ -163,6 +199,38 @@ Class Quizes_model extends CI_Model {
 		$query = $this->db->get('quiz_results as qr');
 
 		return $query;
+	}
+	
+	function get_comments($quiz_id, $limit, $offset) {
+		$this->db->select('qc.*, users.username, users.avatar');
+		$this->db->where('qc.quiz_id', $quiz_id);
+		$this->db->join('users', 'users.id=qc.user_id');
+		$this->db->limit($limit, $offset);
+		$this->db->order_by('created_at', 'DESC');
+		$query = $this->db->get('quiz_comments as qc');
+		return $query->result_array();
+	}
+	
+	function get_comments_count($quiz_id) {
+		$this->db->select('COUNT(id) as count');
+		$this->db->where('quiz_id', $quiz_id);
+		$query = $this->db->get('quiz_comments');
+		return $query->row_array()['count'];
+	}
+	
+	function add_comment($quiz_id, $content) {		
+		$data = array(
+			'user_id' => $this->session->userdata('id'),
+			'quiz_id' => $quiz_id,
+			'content' => $content
+		);		
+		$query = $this->db->insert('quiz_comments', $data);			
+		return $this->db->insert_id();
+	}
+	
+	function get_quiz_owner($quiz_id) {
+		$query = $this->db->get_where('quizes', array('id' => $quiz_id));
+		return $query->row_array()['user_id'];
 	}
 	
 	function make_quiz_category_relation($quiz_id, $category) {

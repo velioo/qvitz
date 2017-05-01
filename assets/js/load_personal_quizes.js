@@ -3,12 +3,13 @@ $(document).ready(function() {
 	var quizes_url = quizesUrl();
 	var limit = getLimit();
 	var total_groups = getTotalQuizGroups();
-	var total_records = 0;		
+	var total_records = 0;	
+	var user_id = getUserId();
 	var loading = false;	
 	
 	loading = true;
 	$('#loader_image_div').show();
-    $.post(quizes_url, {'limit': limit, 'group_number': total_records},
+    $.post(quizes_url, {'limit': limit, 'group_number': total_records, 'user_id': user_id},
     	function(data){ 
         if (data != "") { 
 	    	  $(data).each(function(index, element) {       		  
@@ -29,7 +30,7 @@ $(document).ready(function() {
 	        if(total_records < total_groups) {
 	          loading = true; 
 	          $('#loader_image_div').show(); 
-		          $.post(quizes_url,{'limit': limit, 'group_number': total_records},
+		          $.post(quizes_url,{'limit': limit, 'group_number': total_records, 'user_id': user_id},
 	                  function(data){ 
 	                      if (data != "") {              
 	                    	  $(data).each(function(index, element) {

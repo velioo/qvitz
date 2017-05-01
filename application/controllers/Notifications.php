@@ -92,7 +92,7 @@ class Notifications extends CI_Controller {
 	
 		$elements = array();
 		$link = "";
-		$types = array('level', 'user', 'quiz_comment');
+		$types = array('level', 'quiz_comment');
 			
 		foreach($notifications as $notification) {
 	
@@ -133,15 +133,15 @@ class Notifications extends CI_Controller {
 				case $types[0]:
 					$link = site_url("users/profile/{$notification['username']}");
 					break;
-				case $types[2]:
-					$link = site_url("posts/post/{$notification['source_id']}");
+				case $types[1]:
+					$link = site_url("quiz/do_quiz/{$notification['source_id']}/{$notification['additional_info']}");				
 					break;
 			}
 	
 			$onerror_src = asset_url() . "imgs/Default_Avatar.jpg";
 			
 			$element ='<a href="' . $link .'" class="disable-link-decoration"> <div class="notification" data-id="'. $notification['id'] .'" >
-								<div class="user_image_div notify"><img src="' . asset_url() . "user_profile_images/{$notification['avatar']}" . '" class="user_image" onError="this.onerror=null;this.src=\'' . $onerror_src .'\';" ></div>
+								<div class="user_image_div notify"><img src="' . asset_url() . "user_images/{$notification['avatar']}" . '" class="user_image" onError="this.onerror=null;this.src=\'' . $onerror_src .'\';" ></div>
 								<div class="wrap_notification_username_description">
 										<span class="notification_username">' . $notification['username'] . '&nbsp;</span><span class="description">'. $notification['description'] .'</span>
 										<span class="ago">' . $time_ago .'</span>

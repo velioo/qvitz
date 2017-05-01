@@ -17,7 +17,7 @@ class Quiz extends CI_Controller {
 		$this->load->view('add_edit_quiz', $data);
 	}
 	
-	public function do_quiz($quiz_id) {
+	public function do_quiz($quiz_id, $comment_reference=NULL) {
 		
 		$quiz_info = $this->quizes_model->get_quiz_info($quiz_id);		
 		$quiz_info['questions'] = $this->quizes_model->get_quiz_questions($quiz_id);
@@ -25,7 +25,16 @@ class Quiz extends CI_Controller {
 		for($i = 0; $i < count($quiz_info['questions']); $i++) {
 			$quiz_info['questions'][$i]['answers'] = $this->quizes_model->get_question_answers($quiz_info['questions'][$i]['id']);			
 		}
-
+		
+		$total_comments = $this->quizes_model->get_comments_count($quiz_id);	
+		
+		$limit = 1000;
+		$data['total_groups'] = ceil($total_comments/$limit);	
+		
+		if($comment_reference != NULL) {
+			$data['comment_reference'] = $comment_reference;
+		}
+		
 		$data['quiz'] = $quiz_info;
 		$data['header'] = $quiz_info['name'];
 		$data['title'] = 'Do Quiz';
@@ -340,49 +349,108 @@ class Quiz extends CI_Controller {
 		
 	}
 	
+	public function search() {
+		
+		$this->load->library('pagination');	
+				
+		$config = $this->configure_pagination();
+		$config['base_url'] = site_url("quiz/search");
+		$config['per_page'] = 10;
+
+		$input = strip_tags($this->input->get('search'));
+		
+		if($this->input->get('page') != NULL and is_numeric($this->input->get('page'))) {
+			$start = $this->input->get('page') * $config['per_page'] - $config['per_page'];
+		} else {
+			$start = 0;
+		}
+		
+		$query = $this->quizes_model->get_quizes($config['per_page'], $start, $input);
+		$config['total_rows'] = $this->quizes_model->get_total_quizes_count($input);
+		
+		if($query !== FALSE) {
+				
+			$this->pagination->initialize($config);
+			$data['pagination'] = $this->pagination->create_links();
+			$data['results'] = $query;
+				
+			if($input == '')
+				$data['header'] = 'All quizes';
+			else
+				$data['header'] = 'Results for "' . $input . '"';
+		} else {
+			$this->helpers_model->server_error();
+		}
+		
+		$data['search'] = TRUE;
+		$data['title'] = 'V-Anime';
+		$data['css'] = 'quiz_boxes.css';
+		$this->load->view('home', $data);
+	}
+	
+	public function search_category($category=NULL) {
+		if($category != NULL) {
+						
+			$this->load->library('pagination');
+			
+			$config = $this->configure_pagination();
+			$config['base_url'] = site_url("quiz/search_category/{$category}");
+			$config['per_page'] = 10;		
+			
+			$category = str_replace("_", " ", $category);
+			$category = ucwords($category);
+			
+			if($this->input->get('page') != NULL and is_numeric($this->input->get('page'))) {
+				$start = $this->input->get('page') * $config['per_page'] - $config['per_page'];
+			} else {
+				$start = 0;
+			}
+			
+			$query = $this->quizes_model->get_quizes_category($config['per_page'], $start, $category);
+			$config['total_rows'] = $this->quizes_model->get_total_quizes_count_category($category);
+			
+			if($query !== FALSE) {
+			
+				$this->pagination->initialize($config);
+				$data['pagination'] = $this->pagination->create_links();
+				$data['results'] = $query;			
+				$data['header'] = $category;
+
+			} else {
+				$this->helpers_model->server_error();
+			}
+			
+			$data['search'] = TRUE;
+			$data['title'] = 'V-Anime';
+			$data['css'] = 'quiz_boxes.css';
+			$this->load->view('home', $data);
+			
+		} else {
+			$this->helpers_model->bad_request();
+		}
+	}
+	
 	public function load_quizes() {
 		
 		$limit = $this->input->post('limit');
-		$offset = $this->input->post('group_number');
+		$group_number = $this->input->post('group_number');		
+		$offset = $limit * $group_number;
 		
-		$quizes = $this->quizes_model->get_quizes($limit, $offset);
-				
+		$user_id = $this->input->post('user_id');
+		
+		if($user_id == NULL) {
+			$quizes = $this->quizes_model->get_quizes($limit, $offset);
+		} else {
+			$quizes = $this->quizes_model->get_quizes($limit, $offset, NULL, $user_id);
+		}
+						
 		$elements = array();
 		
 		foreach($quizes as $quiz) {			
 			
-			$onerror_url = asset_url() . "img/logo.jpg";
+			$onerror_url = asset_url() . "imgs/logo.jpg";
 			
-			$current_time = $date = date('Y-m-d H:i:s');
-			$current_time = strtotime($current_time);
-			$date_created = strtotime($quiz['created_at']);
-			
-			$time_difference = $current_time - $date_created;
-			
-			if($time_difference < 60) {
-				$time_ago = $time_difference . " seconds ago";
-			} else if($time_difference >= 60 && $time_difference < 3600) {
-				$time_ago = round($time_difference / 60);
-				if($time_ago == 1) {
-					$time_ago.=" minute ago";
-				} else {
-					$time_ago.=" minutes ago";
-				}
-			} else if($time_difference >= 3600 && $time_difference < 86400) {
-				$time_ago = round($time_difference / 3600);
-				if($time_ago == 1) {
-					$time_ago.=" hour ago";
-				} else {
-					$time_ago.=" hours ago";
-				}
-			} else {
-				$time_ago = round(($time_difference / (3600 * 24)));
-				if($time_ago == 1) {
-					$time_ago.=" day ago";
-				} else {
-					$time_ago.=" days ago";
-				}
-			}
+			$time_ago = calculate_time_ago($quiz['created_at']);
 			
 			$element = "<a href=" . site_url("quiz/do_quiz/{$quiz['id']}") . " class='disable-link-decoration quiz_box_link'>
 						<div class='quiz_box'>
@@ -405,6 +473,83 @@ class Quiz extends CI_Controller {
 			echo $element;
 		}
 		
+	}
+	
+	public function load_comments() {
+	
+		$this->load->model('users_model');
+	
+		$quiz_id = $this->input->post('quiz_id');
+		$group_number = $this->input->post('group_number');
+		
+		$limit = 1000;
+		$offset = ceil($group_number * $limit);
+	
+		$comments = $this->quizes_model->get_comments($quiz_id, $limit, $offset);
+	
+		if($comments !== FALSE) {
+				
+			$elements_array = array();
+				
+			$element = "";
+				
+			foreach($comments as $comment) {
+	
+				$element = "";
+	
+				$onerror_url = asset_url() . "imgs/Default_Avatar.jpg";
+				
+				$element.="<div class='comment' data-id='" . $comment['id'] . "'>
+								<div class='user_image_div'>
+						      		<a href='" . site_url("users/profile/{$comment['username']}") . "'><img class='user_image' src='" . asset_url() . "user_images/{$comment['avatar']}" . "' onerror='this.onerror=null;this.src=\"" . $onerror_url . "\";' ></a>
+						        </div>
+						         <div class='comment_text more'><span class='user_name'><a href='" . site_url("users/profile/{$comment['username']}") . "'class='disable-link-decoration'>" . $comment['username'] . "&nbsp</a></span><span class='content'>" . $comment['content'] . "</span></div>" .		        					       
+						       "<div class='post_time'>" . date("F jS, Y", strtotime($comment['created_at'])) .
+						       "</div>
+							</div>";
+				
+				$elements_array[] = $element;
+
+			}
+				
+			foreach($elements_array as $element) {
+				echo $element;
+			}
+		} else {
+			echo 0;
+		}
+	}
+	
+	public function add_comment() {
+		if($this->session->userdata('is_logged_in') === TRUE) {
+			$this->load->model('notifications_model');
+			$quiz_id = $this->input->post('quiz_id');
+			$content = $this->input->post('content');
+
+			$content = addslashes(trim($content));
+		
+			$comment_id = $this->quizes_model->add_comment($quiz_id, $content);
+				
+			if($comment_id !== FALSE) {
+		
+				$quiz_owner = $this->quizes_model->get_quiz_owner($quiz_id);
+		
+				if($quiz_owner != $this->session->userdata('id')) {
+					$description = "commented on your quiz.";
+					$additional_info = $comment_id;
+					$type = "quiz_comment";
+					$notification_id = $this->notifications_model->add_notification($quiz_id, $description, $type, $additional_info);
+					$this->notifications_model->spread_notification($notification_id, $quiz_owner);
+				}
+		
+				echo $comment_id;
+			} else {
+				echo 0;
+			} 
+		
+		} else {
+			$this->helpers_model->bad_request();
+		}
 	}
 	
 	public function new_level_notification($rank_level) {		
@@ -432,6 +577,32 @@ class Quiz extends CI_Controller {
 		} else {
 			$this->helpers_model->bad_request();
 		}
+	}
+	
+	function configure_pagination() {
+		$config['num_links'] = 5;
+		$config['use_page_numbers'] = TRUE;
+		$config['page_query_string'] = TRUE;
+		$config['reuse_query_string'] = TRUE;
+		$config['query_string_segment'] = 'page';
+		$config['full_tag_open'] = "<ul class='pagination'>";
+		$config['full_tag_close'] ="</ul>";
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['cur_tag_open'] = "<li class='disabled'><li class='active'><a href='#'>";
+		$config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+		$config['next_tag_open'] = "<li>";
+		$config['next_tagl_close'] = "</li>";
+		$config['prev_tag_open'] = "<li>";
+		$config['prev_tagl_close'] = "</li>";
+		$config['first_tag_open'] = "<li>";
+		$config['first_tagl_close'] = "</li>";
+		$config['last_tag_open'] = "<li>";
+		$config['last_tagl_close'] = "</li>";
+		$config["next_link"] = "Next";
+		$config["prev_link"] = "Prev";
+	
+		return $config;
 	}
 	
 }

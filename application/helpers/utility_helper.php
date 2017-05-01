@@ -45,3 +45,39 @@ function calculate_points($questions_count) {
 	return $points_to_add;
 }
 
+function calculate_time_ago($created_at) {
+	
+	$current_time = $date = date('Y-m-d H:i:s');
+	$current_time = strtotime($current_time);
+	$date_created = strtotime($created_at);
+		
+	$time_difference = $current_time - $date_created;
+		
+	if($time_difference < 60) {
+		$time_ago = $time_difference . " seconds ago";
+	} else if($time_difference >= 60 && $time_difference < 3600) {
+		$time_ago = round($time_difference / 60);
+		if($time_ago == 1) {
+			$time_ago.=" minute ago";
+		} else {
+			$time_ago.=" minutes ago";
+		}
+	} else if($time_difference >= 3600 && $time_difference < 86400) {
+		$time_ago = round($time_difference / 3600);
+		if($time_ago == 1) {
+			$time_ago.=" hour ago";
+		} else {
+			$time_ago.=" hours ago";
+		}
+	} else {
+		$time_ago = round(($time_difference / (3600 * 24)));
+		if($time_ago == 1) {
+			$time_ago.=" day ago";
+		} else {
+			$time_ago.=" days ago";
+		}
+	}
+	
+	return $time_ago;
+}
+
