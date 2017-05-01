@@ -18,7 +18,7 @@ if (!$logged) {
 			if(isset($message) || ($this->session->flashdata('message') != NULL) ) { 
 				if($this->session->flashdata('message') != NULL) {
 					$message = $this->session->flashdata('message');
-				}  
+				}
 				if (stripos($message, 'successfully') !== false) {
 					echo "<p class='success'>" . $message . "</p>"; 
 				} else { 

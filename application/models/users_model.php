@@ -140,7 +140,7 @@ Class Users_model extends CI_Model {
 	function get_user_info_logged($username) {
 		$this->db->select('users.*, COUNT(DISTINCT uh.quiz_id) as total_quizes_made, COUNT(DISTINCT quizes.id) as total_quizes_created');
 		$this->db->join('users_history as uh', 'uh.user_id=users.id');
-		$this->db->join('quizes', 'quizes.user_id=users.id');
+		$this->db->join('quizes', 'quizes.user_id=users.id', 'left');
 		$this->db->where('username', $username);
 		$query = $this->db->get('users');
 		

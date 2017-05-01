@@ -5,7 +5,7 @@
 	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2, user-scalable=1">
-	  <meta name="apple-mobile-web-app-capable" content="yes" />  
+	  <meta name="apple-mobile-web-app-capable" content="yes" />
 	  <link rel="icon" type="image/gif" href="<?php echo asset_url() . "imgs/qvitz_better.jpg"?>" />
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">

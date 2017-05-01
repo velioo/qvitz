@@ -5,7 +5,7 @@
 		 <a href="<?php echo base_url();?>" style="color:white; ">Support</a>
 		 <a href="<?php echo base_url();?>" style="color:white; ">Terms</a>
 		 <a href="<?php echo base_url();?>" style="color:white; ">Privacy</a>
-	     <p class="text-muted credit" style="font-size: 10px">Qvitz is a property of Darth Velioo &amps; Teodor Dobrev, LLC ©2017 All Rights Reserved..</p>
+	     <p class="text-muted credit" style="font-size: 10px">Qvitz is a property of Darth Velioo & Teodor Dobrev, LLC ©2017 All Rights Reserved..</p>
      </div>
 </nav>
 </body>

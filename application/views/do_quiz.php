@@ -147,11 +147,11 @@
 				<label id="submit_post" class="button-blue">Post</label>
 			</div>
 		</div>
-		<div id="comments">
-		</div>
 		<?php } else {?>
 			<div class="not_logged"><span class="disable-link-decoration blue-text log_in_modal">Log in</span> to add comments</div>
 		<?php }?>
+		<div id="comments">
+		</div>
 		<div id="loader_image_div2">
 			<img src="<?php echo asset_url() . "imgs/loading_records.gif";?>" class="loader_image">
 		</div>

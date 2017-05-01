@@ -36,7 +36,7 @@ class SignUp extends CI_Controller {
 			if($query !== FALSE) {		
 				$data['account_created'] = "Your account has been created.<br/><br/> You may now log in";
 				$data['title'] = 'Login';
-				$data['css'] = 'home.css';
+				$data['css'] = 'login.css';
 				$data['header'] = 'Please Login';
 				$this->load->view('login_page', $data);
 			} else {
