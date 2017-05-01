@@ -68,7 +68,7 @@ if (!$logged) {
 		  		<div class="category_div"><input id="food_category" type="checkbox" name="category[]" value="food" class="css-checkbox"> <label for="food_category" class="css-label">Food</label></div>
 		  		<div class="category_div"><input id="geeky_category" type="checkbox" name="category[]" value="geeky" class="css-checkbox"> <label for="geeky_category" class="css-label">Geeky</label></div>
 		  		<div class="category_div"><input id="health_category" type="checkbox" name="category[]" value="health" class="css-checkbox"> <label for="health_category" class="css-label">Health</label></div>
-		  		<div class="category_div"><input id="lgbt_category" type="checkbox" name="category[]" value="lgbt" class="css-checkbox"> <label for="lgbt_category" class="css-label">LGBT</label></div>
+		  		<div class="category_div"><input id="love_category" type="checkbox" name="category[]" value="love" class="css-checkbox"> <label for="love_category" class="css-label">Love</label></div>
 		  		<div class="category_div"><input id="life_category" type="checkbox" name="category[]" value="life" class="css-checkbox"> <label for="life_category" class="css-label">Life</label></div>
 		  		<div class="category_div"><input id="music_category" type="checkbox" name="category[]" value="music" class="css-checkbox"> <label for="music_category" class="css-label">Music</label></div>
 		  		<div class="category_div"><input id="parents_category" type="checkbox" name="category[]" value="parents" class="css-checkbox"> <label for="parents_category" class="css-label">Parents</label></div>

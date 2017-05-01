@@ -104,7 +104,7 @@ $(document).ready(function() {
 				            	<li><a href="<?php echo site_url("quiz/search_category/food");?>" class="category_item">Food</a></li>
 				            	<li><a href="<?php echo site_url("quiz/search_category/geeky");?>" class="category_item">Geeky</a></li>
 					            <li><a href="<?php echo site_url("quiz/search_category/health");?>" class="category_item">Health</a></li>
-					            <li><a href="<?php echo site_url("quiz/search_category/lgbt");?>" class="category_item">LGBT</a></li>
+					            <li><a href="<?php echo site_url("quiz/search_category/love");?>" class="category_item">Love</a></li>
 					            <li><a href="<?php echo site_url("quiz/search_category/life");?>" class="category_item">Life</a></li>
 					            <li><a href="<?php echo site_url("quiz/search_category/music");?>" class="category_item">Music</a></li>
 					            <li><a href="<?php echo site_url("quiz/search_category/parents");?>" class="category_item">Parents</a></li>
